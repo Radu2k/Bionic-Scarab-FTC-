@@ -48,7 +48,8 @@ public class controls extends LinearOpMode{
         if(upDrive.getPower()!=0)
             timeheigh.reset();
 
-        if(timeheigh.seconds()>4 && upDrive.getPower()!=0) {
+        if(timeheigh.seconds()>4 && upDrive.getPower()!=0)
+        {
             upDrive.setPower(0.0);
         }
     }
