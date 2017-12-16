@@ -111,10 +111,21 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
-        all.navigate(drive,turn);
         double driveup ;
 
+        all.navigate(drive,turn);
 
+        if(gamepad1.dpad_up)
+            all.lifter_up();
+        else {
+            if (gamepad1.dpad_down)
+                all.lifter_down();
+        }
+        all.checktime();
+
+
+        telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
     }
 
     /*

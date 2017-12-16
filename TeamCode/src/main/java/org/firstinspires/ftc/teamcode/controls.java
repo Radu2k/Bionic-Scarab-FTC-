@@ -31,6 +31,7 @@ public class controls extends LinearOpMode{
         rightPower = (powerRatio*Range.clip(drive - turn, -1.0, 1.0)+(100.0-powerRatio)*rightPower)/100.0;
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
+        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
     //
     public void lifter_up(){
@@ -41,8 +42,6 @@ public class controls extends LinearOpMode{
             timeheigh.startTime();
 
         }
-
-
     }
 
     public void checktime()
@@ -51,7 +50,6 @@ public class controls extends LinearOpMode{
         {
             upDrive.setPower(0.0);
         }
-
     }
 
     public void lifter_down(){
