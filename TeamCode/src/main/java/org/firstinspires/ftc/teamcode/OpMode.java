@@ -62,7 +62,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private DcMotor upDrive = null;
     private double upStep=0.2;
     private ElapsedTime timeheigh = new ElapsedTime();
-
+    controls all = new controls();
     /*
      * Code to run ONCE when the driver hits INIT
      */

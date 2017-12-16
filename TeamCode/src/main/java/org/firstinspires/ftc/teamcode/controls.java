@@ -23,7 +23,7 @@ public class controls extends LinearOpMode{
     private double leftPower;
     private double rightPower;
     private double powerRatio=99.0; //acceleration value the closer to 100 the faster the acceleration
-    private ElapsedTime timeheigh = new ElapsedTime();
+    public ElapsedTime timeheigh = new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
     public void navigate(double drive,double turn){
