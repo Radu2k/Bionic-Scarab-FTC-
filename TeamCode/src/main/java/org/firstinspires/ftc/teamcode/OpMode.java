@@ -108,7 +108,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
     @Override
     public void loop() {
-        all.runOpMode();
+
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         all.navigate(drive,turn);
