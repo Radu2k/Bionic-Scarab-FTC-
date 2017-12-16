@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.sql.Time;
@@ -59,12 +60,13 @@ public class controls extends LinearOpMode{
 
     //main setup phase required to set up motors
     public void runOpMode() {
-        //leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        //rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        //upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        //leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        //rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        //upDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        upDrive.setDirection(DcMotor.Direction.FORWARD);
     }
     controls(){
         runOpMode();
