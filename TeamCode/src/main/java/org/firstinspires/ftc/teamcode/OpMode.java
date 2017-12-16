@@ -101,6 +101,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
         // leftPower  = -gamepad1.left_stick_y ;
         // rightPower = -gamepad1.right_stick_y ;
+        motors.navigate(drive,turn);
         if(gamepad1.dpad_up){
           // if( )
                    motors.lifter_up();
