@@ -19,9 +19,9 @@ public class controls extends LinearOpMode{
     private DcMotor upDrive = null;
 
     //declaring tunning variables
-    private double upStep=0.1; //how fast to lift the cube
-    private double leftPower;
-    private double rightPower;
+    public double upStep=0.1; //how fast to lift the cube
+    public double leftPower;
+    public double rightPower;
     private double powerRatio=99.0; //acceleration value the closer to 100 the faster the acceleration
     public ElapsedTime timeheigh = new ElapsedTime();
 
@@ -59,12 +59,12 @@ public class controls extends LinearOpMode{
 
     //main setup phase required to set up motors
     public void runOpMode() {
-        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        upDrive.setDirection(DcMotor.Direction.FORWARD);
+        //leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        //rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        //upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+        //leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        //upDrive.setDirection(DcMotor.Direction.FORWARD);
     }
     controls(){
         runOpMode();
