@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -59,7 +60,13 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
+
     private controls all;
+
+    double relicv_grab_poz=0.0;
+    double relicv_up_poz=0.0;
+    Servo relicv_grab;
+    Servo relicv_up;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -91,13 +98,20 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
+
         all.runOpMode();
 
+        relicv_grab = hardwareMap.servo.get("servo_grab");
+        relicv_up=hardwareMap.servo.get("servo_up");
+
+        relicv_grab.setPosition(relicv_grab_poz);
+        relicv_up.setPosition(relicv_up_poz);
     }
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
     @Override
     public void loop() {
 
@@ -114,6 +128,21 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 all.lifter_down();
         }
         all.checktime();
+
+
+
+        if(gamepad1.a)
+            if(relicv_grab_poz==0.0)
+                relicv_grab.setPosition(relicv_grab_poz+180);
+            else
+                relicv_grab.setPosition(relicv_grab_poz-180);
+
+        if(gamepad1.b)
+            if(relicv_up_poz==0.0)
+                relicv_up.setPosition(relicv_up_poz+180);
+            else
+                relicv_up.setPosition(relicv_up_poz-180);
+
 
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
