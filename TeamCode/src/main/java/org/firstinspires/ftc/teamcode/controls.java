@@ -36,26 +36,36 @@ public class controls extends LinearOpMode{
     public void lifter_up(){
         upDrive.setPower(upStep);
         if(upDrive.getPower()!=0)
+        {
             timeheigh.reset();
+            timeheigh.startTime();
 
-        if(timeheigh.seconds()>4 && upDrive.getPower()!=0) {
+        }
+
+
+    }
+
+    public void checktime()
+    {
+        if((timeheigh.seconds()>4 && upDrive.getPower()!=0)||(timeheigh.seconds()<-4 && upDrive.getPower()!=0) )
+        {
             upDrive.setPower(0.0);
         }
+
     }
 
     public void lifter_down(){
         upDrive.setPower(-upStep);
         if(upDrive.getPower()!=0)
-            timeheigh.reset();
-
-        if(timeheigh.seconds()>4 && upDrive.getPower()!=0)
         {
-            upDrive.setPower(0.0);
+            timeheigh.reset();
+            timeheigh.startTime();
+
         }
     }
 
     public void lifter_stop(){
-        upDrive.setPower(0);
+        upDrive.setPower(0.0);
     }
 
     //main setup phase required to set up motors
