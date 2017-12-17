@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,6 +40,8 @@ import com.qualcomm.robotcore.util.Range;
 
 
 import java.sql.Time;
+
+
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -124,28 +128,30 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         if(gamepad1.dpad_up || gamepad2.dpad_up)
             all.lifter_up();
-        else {
-            if (gamepad1.dpad_down || gamepad2.dpad_down)
-                all.lifter_down();
-        }
-        all.checktime();
-        all.checktimeextend();
+        else{
+                if (gamepad1.dpad_down || gamepad2.dpad_down)
+                    all.lifter_down();
+            }
+            all.checktime();
+            all.checktimeextend();
+
 
 
         if(gamepad1.a)
             if(relicv_grab_poz==0.0)
-                relicv_grab.setPosition(relicv_grab_poz+180);
+            {   relicv_grab.setPosition(relicv_grab_poz+0.6);
+
+            SystemClock.sleep(2000);}
             else
-                relicv_grab.setPosition(relicv_grab_poz-180);
+                relicv_grab.setPosition(relicv_grab_poz-0.6);
 
         if(gamepad1.b)
             if(relicv_up_poz==0.0)
-                relicv_up.setPosition(relicv_up_poz+180);
+            {   relicv_up.setPosition(relicv_up_poz + 1);
+
+            SystemClock.sleep(2000);}
             else
-                relicv_up.setPosition(relicv_up_poz-180);
-
-
-
+                relicv_up.setPosition(relicv_up_poz-1);
 
 
         if(gamepad1.y)
@@ -161,6 +167,9 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "a = grab");
+        telemetry.addData("Status", "b = up");
+        telemetry.addData("Status", "y = extend");
     }
 
     /*
