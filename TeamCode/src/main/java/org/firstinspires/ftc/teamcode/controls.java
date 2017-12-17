@@ -85,7 +85,10 @@ public class controls extends LinearOpMode{
 
     public void checktimeextend(){
         if(timeextend.seconds()>4)
+        {
             extendDrive.setPower(0);
+            timeextend.reset();
+        }
 
     }
 
