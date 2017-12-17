@@ -121,6 +121,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         all.navigate(drive,turn);
 
+
         if(gamepad1.dpad_up || gamepad2.dpad_up)
             all.lifter_up();
         else {
@@ -138,6 +139,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_grab.setPosition(relicv_grab_poz-180);
 
         if(gamepad1.b)
+            if(relicv_up_poz==0.0)
+                relicv_up.setPosition(relicv_up_poz+180);
+            else
+                relicv_up.setPosition(relicv_up_poz-180);
+
+
+
+
+
+        if(gamepad1.y)
 
             if(retract==1)
                 {
@@ -146,14 +157,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 }
             else
                 all.retract_relic();
-
-        if(gamepad1.y)
-            if(relicv_up_poz==0.0)
-                relicv_up.setPosition(relicv_up_poz+180);
-            else
-                relicv_up.setPosition(relicv_up_poz-180);
-
-
 
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
