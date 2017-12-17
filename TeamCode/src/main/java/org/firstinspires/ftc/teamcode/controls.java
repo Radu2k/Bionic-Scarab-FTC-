@@ -16,14 +16,15 @@ public class controls extends LinearOpMode{
     //dclaring motors
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+    private DcMotor extendDrive = null;
     private DcMotor upDrive = null;
-
-    //declaring tunning variables
+        //declaring tunning variables
     private double upStep=0.1; //how fast to lift the cube
     private double leftPower;
     private double rightPower;
     private double powerRatio=99.0; //acceleration value the closer to 100 the faster the acceleration
     private ElapsedTime timeheigh = new ElapsedTime();
+    private ElapsedTime timeextend = new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
     public void navigate(double drive,double turn){
@@ -66,14 +67,38 @@ public class controls extends LinearOpMode{
         upDrive.setPower(0.0);
     }
 
+    public void extend_relic(){
+
+        extendDrive.setPower(1);
+        timeextend.reset();
+        timeextend.startTime();
+
+    }
+
+    public void retract_relic(){
+
+        extendDrive.setPower(-1);
+        timeextend.reset();
+        timeextend.startTime();
+
+    }
+
+    public void checktimeextend(){
+        if(timeextend.seconds()>4)
+            extendDrive.setPower(0);
+
+    }
+
     //main setup phase required to set up motors
     public void runOpMode() {
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+        extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         upDrive.setDirection(DcMotor.Direction.FORWARD);
+        extendDrive.setDirection(DcMotor.Direction.FORWARD);
     }
     controls(){
         runOpMode();

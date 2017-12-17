@@ -60,7 +60,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
-
+    private int retract=1;
     private controls all;
 
     double relicv_grab_poz=0.0;
@@ -128,7 +128,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 all.lifter_down();
         }
         all.checktime();
-
+        all.checktimeextend();
 
 
         if(gamepad1.a)
@@ -138,10 +138,21 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_grab.setPosition(relicv_grab_poz-180);
 
         if(gamepad1.b)
+
+            if(retract==1)
+                {
+                    all.extend_relic();
+                    retract=-1;
+                }
+            else
+                all.retract_relic();
+
+        if(gamepad1.y)
             if(relicv_up_poz==0.0)
                 relicv_up.setPosition(relicv_up_poz+180);
             else
                 relicv_up.setPosition(relicv_up_poz-180);
+
 
 
 
