@@ -57,7 +57,7 @@ import java.sql.Time;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode" )
+@TeleOp(name="Controller", group="Iterative Opmode" )
 
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
