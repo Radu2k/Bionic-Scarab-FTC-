@@ -63,7 +63,8 @@ public class controls extends LinearOpMode{
         }
     }
 
-    public void lifter_stop(){
+    public void lifter_stop()
+    {
         upDrive.setPower(0.0);
     }
 
