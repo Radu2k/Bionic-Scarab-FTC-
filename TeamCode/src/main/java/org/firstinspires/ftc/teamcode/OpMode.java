@@ -65,7 +65,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private int retract=1;
-    private controls all;
+    controls all;
 
     double relicv_grab_poz=0.0;
     double relicv_up_poz=0.0;
@@ -123,7 +123,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         double turn  =  gamepad1.right_stick_x;
 
 
-        all.navigate(drive,turn);
+        //all.navigate(drive,turn);
 
 
         if(gamepad1.dpad_up || gamepad2.dpad_up)
