@@ -56,25 +56,27 @@ public class controls {
     }
 
     public void grab(){
-    if(grab_cub_check==true && timegrab.seconds()>1) {
-        grab_cube_right.setPosition(grab_cub_poz-0.7 );
-        grab_cube_left.setPosition(grab_cub_poz+0.7);
-        grab_cub_check=false;
-        timegrab.reset();
-        timegrab.startTime();
+        if(timegrab.seconds()>1)
+        if(grab_cub_check==true ) {
+            grab_cube_right.setPosition(grab_cub_poz-0.5 );
+            grab_cube_left.setPosition(grab_cub_poz+0.7);
+            grab_cub_check=false;
+            timegrab.reset();
+            timegrab.startTime();
+
+        }
+                else {
+
+            grab_cube_right.setPosition(grab_cub_poz + 0.5);
+            grab_cube_left.setPosition(grab_cub_poz - 0.7);
+            grab_cub_check = true;
+            timegrab.reset();
+            timegrab.startTime();
+        }
 
     }
-            else {
 
-        grab_cube_right.setPosition(grab_cub_poz + 0.7);
-        grab_cube_left.setPosition(grab_cub_poz - 0.7);
-        grab_cub_check = true;
-        timegrab.reset();
-        timegrab.startTime();
-    }
 
-    timegrab.reset();
-    timegrab.startTime();}
 
     public void checktime()
     {

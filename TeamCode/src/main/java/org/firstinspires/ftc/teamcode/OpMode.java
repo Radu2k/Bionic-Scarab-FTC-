@@ -65,6 +65,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private int retract=1;
+    private boolean grab_cub_check=true;
     controls control = new controls();
 
     double relicv_grab_poz=0.0;
