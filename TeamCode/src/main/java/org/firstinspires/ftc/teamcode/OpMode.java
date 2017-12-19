@@ -65,7 +65,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private int retract=1;
-    controls all;
+    controls control;
 
     double relicv_grab_poz=0.0;
     double relicv_up_poz=0.0;
@@ -103,7 +103,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void start() {
         runtime.reset();
 
-        all.runOpMode();
+        control.runOpMode();
 
         relicv_grab = hardwareMap.servo.get("servo_grab");
         relicv_up=hardwareMap.servo.get("servo_up");
@@ -121,49 +121,39 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
-
-
-        //all.navigate(drive,turn);
-
+        
+        //ctrls.navigate(drive,turn);
 
         if(gamepad1.dpad_up || gamepad2.dpad_up)
-            all.lifter_up();
-        else{
-                if (gamepad1.dpad_down || gamepad2.dpad_down)
-                    all.lifter_down();
-            }
-            all.checktime();
-            all.checktimeextend();
+            control.lifter_up();
+        else if (gamepad1.dpad_down || gamepad2.dpad_down)
+            control.lifter_down();
 
-
+        control.checktime();
+        control.checktimeextend();
 
         if(gamepad1.a)
-            if(relicv_grab_poz==0.0)
-            {   relicv_grab.setPosition(relicv_grab_poz+0.6);
-
-            SystemClock.sleep(2000);}
-            else
+            if(relicv_grab_poz==0.0) {
+                relicv_grab.setPosition(relicv_grab_poz+0.6);
+                SystemClock.sleep(2000);
+            } else
                 relicv_grab.setPosition(relicv_grab_poz-0.6);
 
         if(gamepad1.b)
-            if(relicv_up_poz==0.0)
-            {   relicv_up.setPosition(relicv_up_poz + 1);
-
-            SystemClock.sleep(2000);}
+            if(relicv_up_poz==0.0) {
+                relicv_up.setPosition(relicv_up_poz + 1);
+                SystemClock.sleep(2000);
+            }
             else
                 relicv_up.setPosition(relicv_up_poz-1);
 
-
         if(gamepad1.y)
-
-            if(retract==1)
-                {
-                    all.extend_relic();
-                    retract=-1;
-                }
+            if(retract==1) {
+                control.extend_relic();
+                retract=-1;
+            }
             else
-                all.retract_relic();
-
+                control.retract_relic();
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());

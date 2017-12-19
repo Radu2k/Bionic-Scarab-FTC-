@@ -8,9 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.sql.Time;
-/**
- * Created by dave on 12/16/17.
- */
+
 
 public class controls extends LinearOpMode{
     //dclaring motors
