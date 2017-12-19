@@ -174,28 +174,31 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 control.retract_relic();
 
         if(gamepad1.x)
-            if(relicv_up_poz==0.0) {
-                grab_cube_right.setPosition(relicv_up_poz-0.7 );
-                grab_cube_left.setPosition(relicv_up_poz+0.7);
-                SystemClock.sleep(100);
-                relicv_up_poz=0.5;
+        { if(grab_cub_poz==0.0) {
+                grab_cube_right.setPosition(grab_cub_poz-0.7 );
+                grab_cube_left.setPosition(grab_cub_poz+0.7);
+                //SystemClock.sleep(100);
+            grab_cub_poz=0.5;
 
             }
             else
             {
-                relicv_up_poz=0.0;
-                grab_cube_right.setPosition(relicv_up_poz+0.7 );
-                grab_cube_left.setPosition(relicv_up_poz-0.7) ;
+                grab_cub_poz=0.0;
+                grab_cube_right.setPosition(grab_cub_poz+0.7 );
+                grab_cube_left.setPosition(grab_cub_poz-0.7) ;
+                grab_cub_poz=0.0;
+                //SystemClock.sleep(100);
 
-                SystemClock.sleep(100);
-
-            }
+            }}
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
         telemetry.addData("Status", "b = up");
         telemetry.addData("Status", "y = extend");
+        telemetry.addData("Status", "grab"+grab_cub_poz);
+
+
     }
 
     /*
