@@ -92,11 +92,14 @@ public class controls extends LinearOpMode{
     }
 
     //main setup phase required to set up motors
+    @Override
     public void runOpMode() {
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        telemetry.addData("set up drive engines","");
         upDrive = hardwareMap.get(DcMotor.class, "up_drive");
         extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
+        telemetry.addData("set up drive engines","");
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         upDrive.setDirection(DcMotor.Direction.FORWARD);
