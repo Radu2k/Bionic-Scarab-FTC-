@@ -69,13 +69,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
     double relicv_grab_poz=0.0;
     double relicv_up_poz=0.0;
-    double grab_cub_poz=0;
-    boolean grab_cub_check=true;
+
 
     //Servo relicv_grab;
     //Servo relicv_up;
-    Servo grab_cube_left;
-    Servo grab_cube_right;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -102,8 +100,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
         telemetry.addData("set up lifter and extender engines ","");
 
-        grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
-        grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
+        control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
+        control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
         telemetry.addData("set up grab servos","");
 
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -124,8 +122,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
-        grab_cube_right.setPosition(grab_cub_poz );
-        grab_cube_left.setPosition(grab_cub_poz);
+        control.grab_cube_right.setPosition(0.0);
+        control.grab_cube_left.setPosition(0.0);
         //relicv_grab = hardwareMap.servo.get("servo_grab");
         //relicv_up=hardwareMap.servo.get("servo_up");
 
@@ -177,29 +175,15 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 control.retract_relic();
 
         if(gamepad1.x)
-        { if(grab_cub_check==true) {
-                grab_cube_right.setPosition(grab_cub_poz-0.7 );
-                grab_cube_left.setPosition(grab_cub_poz+0.7);
-                //SystemClock.sleep(100);
-            grab_cub_check=false;
+        { control.grab();}
 
-            }
-            else
-            {
-
-                grab_cube_right.setPosition(grab_cub_poz+0.7 );
-                grab_cube_left.setPosition(grab_cub_poz-0.7) ;
-                grab_cub_check=true;
-                //SystemClock.sleep(100);
-
-            }}
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
         telemetry.addData("Status", "b = up");
         telemetry.addData("Status", "y = extend");
-        telemetry.addData("Status", "grab"+grab_cub_poz);
+
 
 
     }

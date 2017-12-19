@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,11 +20,17 @@ public class controls {
     public DcMotor extendDrive = null;
     public DcMotor upDrive = null;
 
+
+    Servo grab_cube_left;
+    Servo grab_cube_right;
+
     //declaring tunning variables
     private double upStep=0.1;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
+    private double grab_cub_poz=0;
+    private boolean grab_cub_check=true;
 
     private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timeextend = new ElapsedTime();
@@ -37,15 +45,6 @@ public class controls {
         //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 
-    public void checktimecub(Servo servo_power)
-    {
-        if((timegrab.seconds()>2 && servo_power.getPosition()!=0) )
-        {
-            servo_power.setPosition(0.0);
-        }
-    }
-
-
     public void lifter_up(){
         upDrive.setPower(upStep);
         if(upDrive.getPower()!=0)
@@ -55,6 +54,27 @@ public class controls {
 
         }
     }
+
+    public void grab(){
+    if(grab_cub_check==true && timegrab.seconds()>1) {
+        grab_cube_right.setPosition(grab_cub_poz-0.7 );
+        grab_cube_left.setPosition(grab_cub_poz+0.7);
+        grab_cub_check=false;
+        timegrab.reset();
+        timegrab.startTime();
+
+    }
+            else {
+
+        grab_cube_right.setPosition(grab_cub_poz + 0.7);
+        grab_cube_left.setPosition(grab_cub_poz - 0.7);
+        grab_cub_check = true;
+        timegrab.reset();
+        timegrab.startTime();
+    }
+
+    timegrab.reset();
+    timegrab.startTime();}
 
     public void checktime()
     {
@@ -103,5 +123,6 @@ public class controls {
         }
 
     }
+
 
 }
