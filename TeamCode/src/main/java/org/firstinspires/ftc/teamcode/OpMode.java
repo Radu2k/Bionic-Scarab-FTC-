@@ -176,8 +176,9 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(gamepad1.x)
             if(relicv_up_poz==0.0) {
                 grab_cube_right.setPosition(relicv_up_poz+0.5 );
-                grab_cube_left.setPosition(-(grab_cube_right.getPosition()) );
+                grab_cube_left.setPosition(-(relicv_up_poz+0.5) );
                 SystemClock.sleep(2000);
+                relicv_up_poz=0.5;
 
             }
             else
