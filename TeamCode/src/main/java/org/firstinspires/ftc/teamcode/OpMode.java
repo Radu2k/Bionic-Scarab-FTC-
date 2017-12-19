@@ -69,7 +69,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
     double relicv_grab_poz=0.0;
     double relicv_up_poz=0.0;
-    double grab_cub_poz=0.0;
+    double grab_cub_poz=0;
+    boolean grab_cub_check=true;
 
     //Servo relicv_grab;
     //Servo relicv_up;
@@ -123,6 +124,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
+        grab_cube_right.setPosition(grab_cub_poz );
+        grab_cube_left.setPosition(grab_cub_poz);
         //relicv_grab = hardwareMap.servo.get("servo_grab");
         //relicv_up=hardwareMap.servo.get("servo_up");
 
@@ -174,19 +177,19 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 control.retract_relic();
 
         if(gamepad1.x)
-        { if(grab_cub_poz==0.0) {
+        { if(grab_cub_check==true) {
                 grab_cube_right.setPosition(grab_cub_poz-0.7 );
                 grab_cube_left.setPosition(grab_cub_poz+0.7);
                 //SystemClock.sleep(100);
-            grab_cub_poz=0.5;
+            grab_cub_check=false;
 
             }
             else
             {
-                grab_cub_poz=0.0;
+
                 grab_cube_right.setPosition(grab_cub_poz+0.7 );
                 grab_cube_left.setPosition(grab_cub_poz-0.7) ;
-                grab_cub_poz=0.0;
+                grab_cub_check=true;
                 //SystemClock.sleep(100);
 
             }}
