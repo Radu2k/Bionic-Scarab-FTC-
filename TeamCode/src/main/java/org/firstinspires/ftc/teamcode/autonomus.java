@@ -73,40 +73,27 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initializing motors");
-
-        control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        telemetry.addData("set up drive engines","");
-
-        control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
-        telemetry.addData("set up lifter and extender engines ","");
-
-        control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
-        control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
-        telemetry.addData("set up grab servos","");
-
-        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        telemetry.addData("Status", "Initialized motors");
-
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "AW9KAvX/////AAAAGSoAGMf4Dkz0hJ7OIMefI9w9qAkRHuDZBtDVnai4mtg/RUSwT94QTlOFFGJoaF55C1C+aponf8pYfTkVDKBGsGosyfQp1JQZvagKfsyLIYgs8pmZ7GYk7zCjZ1AN3mnmg8558Z/G7SwsaEgCJD2TLmsWYxaKe8PmDLPvRB57dJSJ30lhP9mhPoBmJo0futlynTkzNIn18MR0+DnCCbSIY3UPiwePzC3/AOZyEMV2mVfC/poxmEN+r1cbTCQ4fbjG6OgD0yS7yK9U3VhI97jJJ673neGOyBRJNQqvgdVT/SkjjnlCGVyYrk9nDmiqxQQq8Zju4/CkjodjuRnIBxhc2cWfNbVIQLOBl6LlL9c4Rnh9";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate");
-        relicTrackables.activate();
-
-
+//        telemetry.addData("Status", "Initializing motors");
+//
+//        control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+//        control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+//        telemetry.addData("set up drive engines","");
+//
+//        control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+//        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
+//        telemetry.addData("set up lifter and extender engines ","");
+//
+//        control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
+//        control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
+//        telemetry.addData("set up grab servos","");
+//
+//        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+//        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+//        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
+//        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+//
+//        telemetry.addData("Status", "Initialized motors");
+        
 
     }
 
@@ -148,6 +135,9 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             telemetry.addData("Cube must be placed at right column  of grid", "");
         }
 
+    }
+    String format(OpenGLMatrix transformationMatrix) {
+        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
 
     /*
