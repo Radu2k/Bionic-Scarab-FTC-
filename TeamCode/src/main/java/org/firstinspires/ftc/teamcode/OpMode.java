@@ -110,7 +110,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
     }
-
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -124,19 +123,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
-        //control.grab_cube_right.setPosition(0.0);
-        //control.grab_cube_left.setPosition(0.0);
-        //relicv_grab = hardwareMap.servo.get("servo_grab");
-        //relicv_up=hardwareMap.servo.get("servo_up");
 
-        //relicv_grab.setPosition(relicv_grab_poz);
-        //relicv_up.setPosition(relicv_up_poz);
     }
-
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-//ew
     @Override
     public void loop() {
         double drive = -gamepad1.left_stick_y;
@@ -150,7 +141,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                     control.lifter_down();
                 else control.lifter_stop();
 
-        control.checktime();
+        control.checktimeheight();
         control.checktimeextend();
 
         if(gamepad1.a)
@@ -189,7 +180,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 
     }
-
     /*
      * Code to run ONCE after the driver hits STOP
      */
