@@ -93,7 +93,7 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 //        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 //
 //        telemetry.addData("Status", "Initialized motors");
-        
+
 
     }
 
@@ -107,7 +107,11 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
-    public void start() {
+    public void start(){
+        
+    }
+    @Override
+    public void loop() {
         runtime.reset();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -134,17 +138,7 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(vuMark==RelicRecoveryVuMark.RIGHT){
             telemetry.addData("Cube must be placed at right column  of grid", "");
         }
-
-    }
-    String format(OpenGLMatrix transformationMatrix) {
-        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
+        return;
 
     }
 
@@ -153,6 +147,9 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
     @Override
     public void stop() {
+    }
+    String format(OpenGLMatrix transformationMatrix) {
+        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
 
 }
