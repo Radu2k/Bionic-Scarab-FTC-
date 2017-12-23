@@ -114,7 +114,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", motors.leftPower, motors.rightPower);
+        //telemetry.addData("Motors", "left (%.2f), right (%.2f)", motors.leftPower, motors.rightPower);
     }
 
     /*
