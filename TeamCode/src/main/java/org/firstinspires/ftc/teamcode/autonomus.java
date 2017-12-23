@@ -64,7 +64,7 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private controls control = new controls();
-    public static final String TAG = "Vuforia VuMark Sample";
+    public static final String TAG = "BIONIC SCARAB";
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
 
@@ -139,7 +139,13 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         if(vuMark==RelicRecoveryVuMark.CENTER){
-
+            telemetry.addData("Cube must be placed at center column of grid", "");
+        }
+        if(vuMark==RelicRecoveryVuMark.LEFT){
+            telemetry.addData("Cube must be placed at left column of grid", "");
+        }
+        if(vuMark==RelicRecoveryVuMark.RIGHT){
+            telemetry.addData("Cube must be placed at right column  of grid", "");
         }
 
     }
