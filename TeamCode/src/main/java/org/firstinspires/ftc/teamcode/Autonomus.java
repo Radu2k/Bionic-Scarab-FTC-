@@ -38,6 +38,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -61,7 +67,7 @@ public class Autonomus extends OpMode
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private controls control=new controls();
-    private ConceptVuMarkIdentification vuforia =new ConceptVuMarkIdentification();
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -92,7 +98,33 @@ public class Autonomus extends OpMode
      */
     @Override
     public void init_loop() {
-        if(vuforia.toString()=="left")
+        runtime.reset();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AW9KAvX/////AAAAGSoAGMf4Dkz0hJ7OIMefI9w9qAkRHuDZBtDVnai4mtg/RUSwT94QTlOFFGJoaF55C1C+aponf8pYfTkVDKBGsGosyfQp1JQZvagKfsyLIYgs8pmZ7GYk7zCjZ1AN3mnmg8558Z/G7SwsaEgCJD2TLmsWYxaKe8PmDLPvRB57dJSJ30lhP9mhPoBmJo0futlynTkzNIn18MR0+DnCCbSIY3UPiwePzC3/AOZyEMV2mVfC/poxmEN+r1cbTCQ4fbjG6OgD0yS7yK9U3VhI97jJJ673neGOyBRJNQqvgdVT/SkjjnlCGVyYrk9nDmiqxQQq8Zju4/CkjodjuRnIBxhc2cWfNbVIQLOBl6LlL9c4Rnh9";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate");
+        relicTrackables.activate();
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        while(vuMark == RelicRecoveryVuMark.UNKNOWN){
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        }
+        if(vuMark==RelicRecoveryVuMark.CENTER){
+            telemetry.addData("Cube must be placed at center column of grid", "");
+        }
+        if(vuMark==RelicRecoveryVuMark.LEFT){
+            telemetry.addData("Cube must be placed at left column of grid", "");
+        }
+        if(vuMark==RelicRecoveryVuMark.RIGHT){
+            telemetry.addData("Cube must be placed at right column  of grid", "");
+        }
+        return;
 
     }
 
