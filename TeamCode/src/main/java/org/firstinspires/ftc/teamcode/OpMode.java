@@ -38,11 +38,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
-
-
-
-
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -70,10 +65,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
     double relicv_grab_poz=0.0;
     double relicv_up_poz=0.0;
-
-
-    //Servo relicv_grab;
-    //Servo relicv_up;
 
     /*
      * Code to run ONCE when the driver hits INIT

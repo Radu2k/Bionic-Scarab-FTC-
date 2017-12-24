@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.vuforia.Vuforia;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -59,10 +60,13 @@ public class Autonomus extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+    private controls control=new controls();
+    private ConceptVuMarkIdentification vuforia =new ConceptVuMarkIdentification();
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
@@ -88,6 +92,8 @@ public class Autonomus extends OpMode
      */
     @Override
     public void init_loop() {
+        if(vuforia.toString()=="left")
+
     }
 
     /*
@@ -96,6 +102,7 @@ public class Autonomus extends OpMode
     @Override
     public void start() {
         runtime.reset();
+
     }
 
     /*
