@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -95,6 +96,8 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 //        telemetry.addData("Status", "Initialized motors");
 
 
+
+
     }
 
 
@@ -107,11 +110,7 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
-    public void start(){
-        
-    }
-    @Override
-    public void loop() {
+    public void start() {
         runtime.reset();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -128,6 +127,7 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         while(vuMark == RelicRecoveryVuMark.UNKNOWN){
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            telemetry.addData("not finding symbol", "");
         }
         if(vuMark==RelicRecoveryVuMark.CENTER){
             telemetry.addData("Cube must be placed at center column of grid", "");
@@ -138,8 +138,18 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(vuMark==RelicRecoveryVuMark.RIGHT){
             telemetry.addData("Cube must be placed at right column  of grid", "");
         }
-        return;
+        telemetry.update();
 
+    }
+    String format(OpenGLMatrix transformationMatrix) {
+        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
+    }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+    @Override
+    public void loop() {
     }
 
     /*
@@ -147,9 +157,6 @@ public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
     @Override
     public void stop() {
-    }
-    String format(OpenGLMatrix transformationMatrix) {
-        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
 
 }
