@@ -58,9 +58,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="automonous", group ="Autonomous")
+@Autonomous(name="Automonous", group ="Autonomous")
 
-public class autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
+public class Autonomus extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
