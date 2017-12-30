@@ -66,7 +66,6 @@ public class Autonomous_linear extends LinearOpMode {
 
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
@@ -77,18 +76,18 @@ public class Autonomous_linear extends LinearOpMode {
         while (opModeIsActive()) {
 
             while(vuMark == RelicRecoveryVuMark.UNKNOWN){
-                vuMark= RelicRecoveryVuMark.from(relicTemplate);
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
 
-            telemetry.addData("DETECTED","");
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                telemetry.addData("DETECTED","right");
+                telemetry.addData("DETECTED:","right");
+
             }
             if(vuMark==RelicRecoveryVuMark.CENTER){
-                telemetry.addData("DETECTED","center");
+                telemetry.addData("DETECTED:","center");
             }
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                telemetry.addData("DETECTED","left");
+                telemetry.addData("DETECTED:","left");
             }
             telemetry.update();
         }
