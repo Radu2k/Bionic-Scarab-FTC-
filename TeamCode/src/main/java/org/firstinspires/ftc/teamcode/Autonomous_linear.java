@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class Autonomous_linear extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
-
+    
     @Override public void runOpMode() {
 
 
