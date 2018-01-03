@@ -20,7 +20,6 @@ public class controls {
     public DcMotor extendDrive = null;
     public DcMotor upDrive = null;
 
-
     Servo grab_cube_left;
     Servo grab_cube_right;
 
@@ -38,6 +37,7 @@ public class controls {
     private ElapsedTime timegrab = new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
+
     public void navigate(double drive,double turn){
         leftPower = (powerRatio*Range.clip(drive + turn, -1.0, 1.0)+(100.0-powerRatio)*leftPower)/100.0 ;
         rightPower = (powerRatio*Range.clip(drive - turn, -1.0, 1.0)+(100.0-powerRatio)*rightPower)/100.0;
@@ -52,7 +52,24 @@ public class controls {
         {
             timeheigh.reset();
             timeheigh.startTime();
+        }
+    }
 
+    public void lifter_down(){
+        upDrive.setPower(-upStep);
+        if(upDrive.getPower()!=0)
+        {
+            timeheigh.reset();
+            timeheigh.startTime();
+
+
+        }
+    }
+
+    public void checktimeheight() {
+        if((timeheigh.seconds()>4 && upDrive.getPower()!=0)||(timeheigh.seconds()<-4 && upDrive.getPower()!=0) )
+        {
+            upDrive.setPower(0.0);
         }
     }
 
@@ -75,26 +92,6 @@ public class controls {
                 timegrab.startTime();
             }
 
-    }
-
-
-
-    public void checktime()
-    {
-        if((timeheigh.seconds()>4 && upDrive.getPower()!=0)||(timeheigh.seconds()<-4 && upDrive.getPower()!=0) )
-        {
-            upDrive.setPower(0.0);
-        }
-    }
-
-    public void lifter_down(){
-        upDrive.setPower(-upStep);
-        if(upDrive.getPower()!=0)
-        {
-            timeheigh.reset();
-            timeheigh.startTime();
-
-        }
     }
 
     public void lifter_stop()
