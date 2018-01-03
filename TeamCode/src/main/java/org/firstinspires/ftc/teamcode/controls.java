@@ -52,7 +52,6 @@ public class controls {
         {
             timeheigh.reset();
             timeheigh.startTime();
-
         }
     }
 
@@ -62,6 +61,7 @@ public class controls {
         {
             timeheigh.reset();
             timeheigh.startTime();
+
 
         }
     }
