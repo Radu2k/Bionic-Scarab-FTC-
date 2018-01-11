@@ -28,8 +28,8 @@ public class controls {
     private double leftPower;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
-    private double grab_cub_poz_left=0;
-    private double grab_cub_poz_right=0.8;
+    private double grab_cub_poz_left=-0.2;
+    private double grab_cub_poz_right=0.9;
     private boolean grab_cub_check=true;
 
     private ElapsedTime timeheigh = new ElapsedTime();
@@ -76,7 +76,7 @@ public class controls {
     public void grab(){
         if(timegrab.seconds()>1)
             if(grab_cub_check==true ) {
-                grab_cube_right.setPosition(grab_cub_poz_right - 0.1 );
+                grab_cube_right.setPosition(grab_cub_poz_right - 0.2 );
                 grab_cube_left.setPosition(grab_cub_poz_left + 0.2);
                 grab_cub_check=false;
                 timegrab.reset();
@@ -85,7 +85,7 @@ public class controls {
             }
             else {
 
-                grab_cube_right.setPosition(grab_cub_poz_right + 0.1);
+                grab_cube_right.setPosition(grab_cub_poz_right + 0.2);
                 grab_cube_left.setPosition(grab_cub_poz_left - 0.2);
                 grab_cub_check = true;
                 timegrab.reset();
