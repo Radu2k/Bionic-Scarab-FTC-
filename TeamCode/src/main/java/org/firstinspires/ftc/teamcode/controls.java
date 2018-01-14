@@ -47,12 +47,10 @@ public class controls {
 
     public void lifter_up(){
         upDrive.setPower(upStep);
-
     }
 
     public void lifter_down(){
         upDrive.setPower(-upStep);
-
     }
 
 
