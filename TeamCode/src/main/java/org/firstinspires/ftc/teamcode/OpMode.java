@@ -128,11 +128,13 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         if(gamepad1.dpad_up || gamepad2.dpad_up)
             control.lifter_up();
-        else if (gamepad1.dpad_down || gamepad2.dpad_down)
-                    control.lifter_down();
-                else control.lifter_stop();
+        else control.lifter_stop();
 
-        control.checktimeheight();
+        if(gamepad1.dpad_down || gamepad2.dpad_down)
+            control.lifter_down();
+        else control.lifter_stop();
+
+
         control.checktimeextend();
 
         if(gamepad1.a)
