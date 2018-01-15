@@ -23,13 +23,13 @@ public class controls {
     Servo grab_cube_left;
     Servo grab_cube_right;
 
+
     //declaring tunning variables
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
-    private double grab_cub_poz_right=0.6;
-    private double grab_cub_poz_left=-0.7;
+
     private boolean grab_cub_check=true;
 
     private ElapsedTime timeextend = new ElapsedTime();
@@ -56,26 +56,34 @@ public class controls {
     }
 
 
+    public void grabfirst(){
+
+        grab_cube_right.setPosition(0.7 );
+        grab_cube_left.setPosition(0.2 );
+
+    }
 
     public void grab(){
-        if(timegrab.seconds()>1)
-            if(grab_cub_check==true ) {
-                grab_cube_right.setPosition(grab_cub_poz_right - 0.2 );
-                grab_cube_left.setPosition(grab_cub_poz_left + 0.2);
-                grab_cub_check=false;
+        if(timegrab.seconds()>0.3
+                ) {
+            if (grab_cub_check == true) {
+                grab_cube_right.setPosition(0.6);
+
+                grab_cube_left.setPosition(0.3);
+                grab_cub_check = false;
                 timegrab.reset();
                 timegrab.startTime();
 
-            }
-            else {
+            } else {
 
-                grab_cube_right.setPosition(grab_cub_poz_right + 0.2);
-                grab_cube_left.setPosition(grab_cub_poz_left - 0.2);
+                grab_cube_right.setPosition( 0.9);
+                grab_cube_left.setPosition(-0.1);
+
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
             }
-
+        }
     }
 
     public void lifter_stop()
