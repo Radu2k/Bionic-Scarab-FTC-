@@ -157,11 +157,20 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         if(gamepad1.y)
             if(retract==1) {
-                control.extend_relic();
-                retract=-1;
+                control.retract_relic();
+                retract=2;
             }
             else
+            {if(retract==2)
+            {
                 control.stop_extend_relic();
+                retract=-1;
+            }else
+            {
+                control.extend_relic();
+                retract=1;
+            }
+            }
 
         if(gamepad1.x)
         { control.grab();}

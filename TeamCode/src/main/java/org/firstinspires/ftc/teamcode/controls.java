@@ -87,7 +87,7 @@ public class controls {
 
     public void extend_relic(){
 
-        extendDrive.setPower(1);
+        extendDrive.setPower(-1);
         timeextend.reset();
         timeextend.startTime();
 
@@ -102,7 +102,7 @@ public class controls {
     }
 
     public void retract_relic(){
-        extendDrive.setPower(-1);
+        extendDrive.setPower(1);
         timeextend.reset();
         timeextend.startTime();
     }
