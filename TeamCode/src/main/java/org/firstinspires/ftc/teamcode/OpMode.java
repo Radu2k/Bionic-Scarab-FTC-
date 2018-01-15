@@ -34,6 +34,7 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -85,7 +86,9 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -158,10 +161,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 retract=-1;
             }
             else
-                control.retract_relic();
+                control.stop_extend_relic();
 
         if(gamepad1.x)
         { control.grab();}
+
 
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);

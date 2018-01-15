@@ -53,6 +53,10 @@ public class controls {
         upDrive.setPower(-upStep);
     }
 
+    public void runDistance(){
+
+    }
+
 
 
     public void grab(){
@@ -89,12 +93,18 @@ public class controls {
 
     }
 
-    public void retract_relic(){
+    public void stop_extend_relic(){
 
-        extendDrive.setPower(-1);
+        extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
 
+    }
+
+    public void retract_relic(){
+        extendDrive.setPower(-1);
+        timeextend.reset();
+        timeextend.startTime();
     }
 
     public void checktimeextend(){
