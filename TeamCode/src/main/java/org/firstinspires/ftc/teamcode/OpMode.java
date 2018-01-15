@@ -64,15 +64,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
     double relicv_grab_poz=0.6;
     double relicv_up_poz=0.0;
+
     Servo relicv_up;
     Servo relicv_grab;
-
     /*
      * Code to run ONCE when the driver hits INIT
      */
 
     @Override
     public void init() {
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
