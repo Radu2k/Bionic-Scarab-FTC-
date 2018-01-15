@@ -59,11 +59,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
+    private ElapsedTime timegrab=new ElapsedTime();
+    private ElapsedTime timeup=new ElapsedTime();
+
     private int retract=1;
     controls control = new controls();
 
-    double relicv_grab_poz=0.6;
+    double relicv_grab_poz=0.8;
     double relicv_up_poz=0.0;
+    double gamepadright=0.0;
+    double gamepadleft=0.0;
 
     Servo relicv_up;
     Servo relicv_grab;
@@ -135,48 +140,49 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         control.navigate(drive,turn);
 
-        if(gamepad1.dpad_up || gamepad2.dpad_up)
+        if(gamepad1.right_bumper )
             control.lifter_up();
         else control.lifter_stop();
 
-        if(gamepad1.dpad_down || gamepad2.dpad_down)
+        if(gamepad1.left_bumper )
             control.lifter_down();
         else control.lifter_stop();
 
-        control.checktimeextend();
 
-        if(gamepad1.a)
-            if(relicv_grab_poz==0) {
+        if(gamepad1.a && timegrab.seconds()>0.3)
+            if(relicv_grab_poz==0.2) {
                 relicv_grab_poz=0.6;
-                relicv_grab.setPosition(0.01);
+                relicv_grab.setPosition(0.6);
+                timegrab.reset();
                 SystemClock.sleep(20);
             } else
-              {relicv_grab_poz=0;
-                relicv_grab.setPosition(0);
-                    SystemClock.sleep(20);
+              {relicv_grab_poz=0.2;
+               relicv_grab.setPosition(0.2);
+               SystemClock.sleep(20);
+               timegrab.reset();
+
 
               }
 
-        if(gamepad1.b)
-            if(relicv_up_poz==0.6) {
+
+        if(gamepad1.b&& timeup.seconds()>0.3)
+            if(relicv_up_poz==0.8) {
                 relicv_up_poz=0;
-                relicv_up.setPosition(relicv_up_poz);
+                relicv_up.setPosition(0);
+                timeup.reset();
                 SystemClock.sleep(20);
             }
             else
             {
-                relicv_up_poz=0.6;
-                relicv_up.setPosition(relicv_up_poz);
+                relicv_up_poz=0.8;
+                timeup.reset();
+                relicv_up.setPosition(0.8);
                 SystemClock.sleep(20);
             }
-
-        if(gamepad1.y)
-            if(retract==1) {
-                control.extend_relic();
-                retract=-1;
-            }
-            else
-                control.retract_relic();
+        gamepadleft=gamepad1.left_trigger;
+        gamepadright=gamepad1.right_trigger;
+        control.extendDrive.setPower(gamepadright);
+        control.extendDrive.setPower(-gamepadleft);
 
         if(gamepad1.x)
          control.grab();
@@ -189,7 +195,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "y = extend");
         telemetry.addData("Status", "servo left"+control.grab_cube_left.getPosition());
         telemetry.addData("Status", "servo right"+control.grab_cube_right.getPosition());
-
+        telemetry.addData("Status", "servo up"+relicv_up.getPosition());
+        telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
+        telemetry.addData("Status", String.format("right trig" + gamepad1.right_bumper));
+        telemetry.addData("Status",String.format("left trig" + gamepad1.left_bumper));
 
     }
     /*

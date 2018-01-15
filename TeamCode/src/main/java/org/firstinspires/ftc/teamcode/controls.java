@@ -32,8 +32,9 @@ public class controls {
 
     private boolean grab_cub_check=true;
 
-    private ElapsedTime timeextend = new ElapsedTime();
-    private ElapsedTime timegrab = new ElapsedTime();
+    public ElapsedTime timeextend = new ElapsedTime();
+
+    public ElapsedTime timegrab = new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
 
@@ -62,8 +63,7 @@ public class controls {
     }
 
     public void grab(){
-        if(timegrab.seconds()>0.3
-                ) {
+        if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
                 grab_cube_right.setPosition(0.6);
 
@@ -89,30 +89,18 @@ public class controls {
         upDrive.setPower(0.0);
     }
 
-    public void extend_relic(){
 
-        extendDrive.setPower(1);
+
+    public void stop_extend_relic(){
+
+        extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
 
-    }
-
-    public void retract_relic(){
-
-        extendDrive.setPower(-1);
-        timeextend.reset();
-        timeextend.startTime();
 
     }
 
-    public void checktimeextend(){
-        if(timeextend.seconds()>4)
-        {
-            extendDrive.setPower(0);
-            timeextend.reset();
-        }
 
-    }
 
 
 }
