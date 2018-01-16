@@ -26,6 +26,9 @@ public class controls {
     //declaring tunning variables
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
+    private int offset=2;
+    private double cmPerRotation=13.333333333333333;
+    private double degreesPerRotation=0.3141592653589793;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
     private double grab_cub_poz_right=0.6;
@@ -53,7 +56,30 @@ public class controls {
         upDrive.setPower(-upStep);
     }
 
-    public void runDistance(){
+    public void forewardWithDistance(double power ,int distance){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps = distance*cmPerRotation;
+        int step = (int) steps;
+        leftDrive.setTargetPosition(step);
+        rightDrive.setTargetPosition(step);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+    }
+
+    public void rotateLeftDegrees(double power, int degrees){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps=degrees*degreesPerRotation*cmPerRotation;
+        int s= (int) steps*offset;
+        leftDrive.setTargetPosition(-s);
+        rightDrive.setTargetPosition(s);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(-power);
+        rightDrive.setPower(power);
 
     }
 

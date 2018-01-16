@@ -63,6 +63,7 @@ public class Autonomous_linear extends LinearOpMode {
     private int retract=1;
     private boolean grab_cub_check=true;
     controls control = new controls();
+
     
     @Override public void runOpMode() {
 
@@ -137,9 +138,10 @@ public class Autonomous_linear extends LinearOpMode {
                 }
             }
 
-            while(vuMark == RelicRecoveryVuMark.UNKNOWN){
+            //while(vuMark == RelicRecoveryVuMark.UNKNOWN){
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            }
+            //}
+
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 telemetry.addData("DETECTED:","right");
@@ -152,6 +154,10 @@ public class Autonomous_linear extends LinearOpMode {
                 telemetry.addData("DETECTED:","left");
             }
             telemetry.update();
+
+            control.rotateLeftDegrees(05,90);
+
+            break;
         }
     }
 
