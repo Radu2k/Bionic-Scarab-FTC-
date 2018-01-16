@@ -23,18 +23,21 @@ public class controls {
     Servo grab_cube_left;
     Servo grab_cube_right;
 
+
     //declaring tunning variables
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
+    private int offset=2;
+    private double cmPerRotation=13.333333333333333;
+    private double degreesPerRotation=0.3141592653589793;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
-    private double grab_cub_poz_left=0;
-    private double grab_cub_poz_right=0.8;
+
     private boolean grab_cub_check=true;
 
-    private ElapsedTime timeheigh = new ElapsedTime();
-    private ElapsedTime timeextend = new ElapsedTime();
-    private ElapsedTime timegrab = new ElapsedTime();
+    public ElapsedTime timeextend = new ElapsedTime();
+
+    public ElapsedTime timegrab = new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
 
@@ -48,50 +51,95 @@ public class controls {
 
     public void lifter_up(){
         upDrive.setPower(upStep);
-        if(upDrive.getPower()!=0)
-        {
-            timeheigh.reset();
-            timeheigh.startTime();
-        }
     }
 
     public void lifter_down(){
         upDrive.setPower(-upStep);
-        if(upDrive.getPower()!=0)
-        {
-            timeheigh.reset();
-            timeheigh.startTime();
-
-
-        }
     }
 
-    public void checktimeheight() {
-        if((timeheigh.seconds()>4 && upDrive.getPower()!=0)||(timeheigh.seconds()<-4 && upDrive.getPower()!=0) )
-        {
-            upDrive.setPower(0.0);
-        }
+    public void forewordWithDistance(double power ,int distance){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps = distance*cmPerRotation;
+        int step = (int) steps;
+        leftDrive.setTargetPosition(step);
+        rightDrive.setTargetPosition(step);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+    }
+
+    public void rotateLeftDegrees(double power, int degrees){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps=degrees*degreesPerRotation*cmPerRotation;
+        int s= (int) steps*offset;
+        leftDrive.setTargetPosition(-s);
+        rightDrive.setTargetPosition(s);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(-power);
+        rightDrive.setPower(power);
+
+    }
+
+    public void rotateRightDegrees(double power ,int degrees){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps=degrees*degreesPerRotation*cmPerRotation;
+        int s= (int) steps*offset;
+        leftDrive.setTargetPosition(s);
+        rightDrive.setTargetPosition(-s);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(power);
+        rightDrive.setPower(-power);
+    }
+
+    public void backwardWithDistance(double power,int distance){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps = distance*cmPerRotation;
+        int step = (int) steps;
+        leftDrive.setTargetPosition(-step);
+        rightDrive.setTargetPosition(-step);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(-power);
+        rightDrive.setPower(-power);
+    }
+
+
+
+
+    public void grabfirst(){
+
+        grab_cube_right.setPosition(0.7 );
+        grab_cube_left.setPosition(0.2 );
+
     }
 
     public void grab(){
-        if(timegrab.seconds()>1)
-            if(grab_cub_check==true ) {
-                grab_cube_right.setPosition(grab_cub_poz_right - 0.1 );
-                grab_cube_left.setPosition(grab_cub_poz_left + 0.2);
-                grab_cub_check=false;
+        if(timegrab.seconds()>0.3) {
+            if (grab_cub_check == true) {
+                grab_cube_right.setPosition(0.6);
+
+                grab_cube_left.setPosition(0.3);
+                grab_cub_check = false;
                 timegrab.reset();
                 timegrab.startTime();
 
-            }
-            else {
+            } else {
 
-                grab_cube_right.setPosition(grab_cub_poz_right + 0.1);
-                grab_cube_left.setPosition(grab_cub_poz_left - 0.2);
+                grab_cube_right.setPosition( 0.9);
+                grab_cube_left.setPosition(-0.1);
+
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
             }
-
+        }
     }
 
     public void lifter_stop()
@@ -99,28 +147,14 @@ public class controls {
         upDrive.setPower(0.0);
     }
 
-    public void extend_relic(){
 
-        extendDrive.setPower(1);
+
+
+    public void stop_extend_relic(){
+        extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
 
-    }
-
-    public void retract_relic(){
-
-        extendDrive.setPower(-1);
-        timeextend.reset();
-        timeextend.startTime();
-
-    }
-
-    public void checktimeextend(){
-        if(timeextend.seconds()>4)
-        {
-            extendDrive.setPower(0);
-            timeextend.reset();
-        }
 
     }
 

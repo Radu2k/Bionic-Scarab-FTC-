@@ -46,16 +46,59 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 
 
 @Autonomous(name="a_linear", group ="Autonomous")
 public class Autonomous_linear extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
+    ColorSensor colorSensor;
+    private int retract=1;
+    private boolean grab_cub_check=true;
+    controls control = new controls();
+
     
     @Override public void runOpMode() {
 
+        //setting up motors
+        telemetry.addData("Status", "Initialized");
 
+        control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        control.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        control.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("set up drive engines","");
+
+        control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
+        telemetry.addData("set up lifter and extender engines ","");
+
+        control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
+        control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
+        telemetry.addData("set up grab servos","");
+
+        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
+        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        //color sensor configuration
+
+        colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        boolean ball_color =true; //meaning the ball is the same color as the team
+        String team_color="blue";
+
+
+        // vumark configuration
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
@@ -75,9 +118,30 @@ public class Autonomous_linear extends LinearOpMode {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         while (opModeIsActive()) {
 
-            while(vuMark == RelicRecoveryVuMark.UNKNOWN){
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", colorSensor.red()),colorSensor.green(),colorSensor.blue());
+
+            if(colorSensor.red()>colorSensor.blue()){
+                telemetry.addData("ball color: ","red");
+                if(team_color=="red"){
+                    ball_color=true;
+                }else{
+                    ball_color=false;
+                }
+            }else{
+                if(colorSensor.blue()>colorSensor.red()){
+                    telemetry.addData("ball color: ","blue");
+                    if(team_color=="blue"){
+                        ball_color=true;
+                    }else{
+                        ball_color=false;
+                    }
+                }
             }
+
+            //while(vuMark == RelicRecoveryVuMark.UNKNOWN){
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            //}
+
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 telemetry.addData("DETECTED:","right");
@@ -90,6 +154,10 @@ public class Autonomous_linear extends LinearOpMode {
                 telemetry.addData("DETECTED:","left");
             }
             telemetry.update();
+
+            control.rotateLeftDegrees(05,90);
+
+            break;
         }
     }
 
