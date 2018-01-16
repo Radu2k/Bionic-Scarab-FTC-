@@ -56,7 +56,7 @@ public class controls {
         upDrive.setPower(-upStep);
     }
 
-    public void forewardWithDistance(double power ,int distance){
+    public void forewordWithDistance(double power ,int distance){
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps = distance*cmPerRotation;
@@ -82,6 +82,34 @@ public class controls {
         rightDrive.setPower(power);
 
     }
+
+    public void rotateRightDegrees(double power ,int degrees){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps=degrees*degreesPerRotation*cmPerRotation;
+        int s= (int) steps*offset;
+        leftDrive.setTargetPosition(s);
+        rightDrive.setTargetPosition(-s);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(power);
+        rightDrive.setPower(-power);
+    }
+
+    public void backwardWithDistance(double power,int distance){
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double steps = distance*cmPerRotation;
+        int step = (int) steps;
+        leftDrive.setTargetPosition(-step);
+        rightDrive.setTargetPosition(-step);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setPower(-power);
+        rightDrive.setPower(-power);
+    }
+
+
 
 
 
