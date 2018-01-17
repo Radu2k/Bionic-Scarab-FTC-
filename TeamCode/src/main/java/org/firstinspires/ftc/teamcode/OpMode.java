@@ -34,7 +34,6 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -69,7 +68,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.0;
     double gamepadright=0.0;
-    double gamepadleft=0.0;
+    double retract_extend=0.0;
 
     Servo relicv_up;
     Servo relicv_grab;
@@ -93,9 +92,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -143,20 +140,20 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         control.navigate(drive,turn);
 
-        if(gamepad1.right_bumper )
+        if(gamepad1.dpad_up )
             control.lifter_up();
         else control.lifter_stop();
 
-        if(gamepad1.left_bumper )
+        if(gamepad1.dpad_down )
             control.lifter_down();
         else control.lifter_stop();
+
 
         if(gamepad1.a && timegrab.seconds()>0.3)
             if(relicv_grab_poz==0.2) {
                 relicv_grab_poz=0.6;
                 relicv_grab.setPosition(0.6);
                 timegrab.reset();
-
                 SystemClock.sleep(20);
             } else
               {relicv_grab_poz=0.2;
@@ -166,6 +163,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 
               }
+
 
         if(gamepad1.b&& timeup.seconds()>0.3)
             if(relicv_up_poz==0.8) {
@@ -181,15 +179,22 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_up.setPosition(0.8);
                 SystemClock.sleep(20);
             }
-        gamepadleft=gamepad1.left_trigger;
-        gamepadright=gamepad1.right_trigger;
-        control.extendDrive.setPower(gamepadright);
-        control.extendDrive.setPower(-gamepadleft);
+
+
+
+       if(gamepad1.right_bumper )
+           control.extendDrive.setPower(1);
+       else
+           control.extendDrive.setPower(0);
+
+
+        if(gamepad1.left_bumper )
+            control.extendDrive.setPower(-1);
+        else
+            control.extendDrive.setPower(0);
 
         if(gamepad1.x)
-         control.grab();
-
-
+            control.grab();
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
