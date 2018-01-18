@@ -54,7 +54,6 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  *   - Drive Backwards for 24 inches
  *   - Stop and close the claw.
  *
- *
  *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
  *  that performs the actual movement.
  *  This methods assumes that each movement is relative to the last stopping place.
