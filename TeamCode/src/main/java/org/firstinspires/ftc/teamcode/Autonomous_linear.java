@@ -29,41 +29,27 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
 
-
-@Autonomous(name="a_linear", group ="Autonomous")
+@Autonomous(name="Autonomous", group ="Autonomous")
 public class Autonomous_linear extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
     ColorSensor colorSensor;
     private int retract=1;
     private boolean grab_cub_check=true;
-    controls control = new controls();
-
+    Controls control = new Controls();
+    PushbotAutoDriveByEncoder_Linear move=new PushbotAutoDriveByEncoder_Linear();
     
     @Override public void runOpMode() {
 
@@ -71,11 +57,11 @@ public class Autonomous_linear extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        control.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        control.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+  //      control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        control.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    //    control.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      //  control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -155,7 +141,9 @@ public class Autonomous_linear extends LinearOpMode {
             }
             telemetry.update();
 
-            control.rotateLeftDegrees(05,90);
+            move.encoderDrive(0.5,20,20,5);
+
+
 
             break;
         }
