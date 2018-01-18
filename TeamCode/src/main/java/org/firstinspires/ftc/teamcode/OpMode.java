@@ -74,7 +74,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      * Code to run ONCE when the driver hits INIT
      */
 
-
     @Override
     public void init() {
 
