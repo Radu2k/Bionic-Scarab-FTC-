@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -110,6 +111,14 @@ public class Autonomous_linear extends LinearOpMode {
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
 
+        //gyro setup
+//        control.Gyro=hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+//        control.Gyro.calibrate();
+//        while (!isStopRequested() && control.Gyro.isCalibrating())  {
+//            telemetry.update();
+//            sleep(50);
+//        }
+
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
@@ -155,8 +164,22 @@ public class Autonomous_linear extends LinearOpMode {
             }
             telemetry.update();
 
-            control.rotateLeftDegrees(05,90);
-
+            for(int i=0;i<4;i++) {
+                control.forewordWithDistance(0.8, 50);
+                control.rotateRightDegrees(0.8, 90);
+            }
+//            telemetry.addData("rotating right", String.format("%h , %h", control.leftDrive.getPower(),control.rightDrive.getPower()));
+//            telemetry.update();
+//            control.rotateRightDegrees(1,360);
+//            telemetry.addData("rotating left",String.format("%h , %h", control.leftDrive.getPower(),control.rightDrive.getPower()));
+//            telemetry.update();
+//            control.rotateLeftDegrees(1,360);
+//            telemetry.addData("foreword",String.format("%h , %h", control.leftDrive.getPower(),control.rightDrive.getPower()));
+//            telemetry.update();
+//            control.forewordWithDistance(1,30);
+//            telemetry.addData("backward",String.format("%h , %h", control.leftDrive.getPower(),control.rightDrive.getPower()));
+//            telemetry.update();
+//            control.backwardWithDistance(1,30);
             break;
         }
     }

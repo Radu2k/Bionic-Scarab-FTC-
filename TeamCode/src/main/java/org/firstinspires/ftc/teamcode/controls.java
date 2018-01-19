@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,6 +20,7 @@ public class controls {
     public DcMotor rightDrive = null;
     public DcMotor extendDrive = null;
     public DcMotor upDrive = null;
+    //ModernRoboticsI2cGyro Gyro;
 
     Servo grab_cube_left;
     Servo grab_cube_right;
@@ -27,8 +29,8 @@ public class controls {
     //declaring tunning variables
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
-    private int offset=2;
-    private double cmPerRotation=13.333333333333333;
+    private int offset=1;
+    private double cmPerRotation=13.33;
     private double degreesPerRotation=0.3141592653589793;
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
@@ -57,7 +59,13 @@ public class controls {
         upDrive.setPower(-upStep);
     }
 
+    public void stopmotors(){
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+
     public void forewordWithDistance(double power ,int distance){
+
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps = distance*cmPerRotation;
@@ -68,23 +76,33 @@ public class controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDrive.setPower(power);
         rightDrive.setPower(power);
+        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
+        stopmotors();
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void rotateLeftDegrees(double power, int degrees){
+
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps=degrees*degreesPerRotation*cmPerRotation;
         int s= (int) steps*offset;
         leftDrive.setTargetPosition(-s);
         rightDrive.setTargetPosition(s);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDrive.setPower(-power);
         rightDrive.setPower(power);
+        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
+        stopmotors();
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
     public void rotateRightDegrees(double power ,int degrees){
+
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps=degrees*degreesPerRotation*cmPerRotation;
@@ -95,9 +113,18 @@ public class controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDrive.setPower(power);
         rightDrive.setPower(-power);
+        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
+        stopmotors();
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void rotateLeftWithGyro(double power,int degrees){
+
     }
 
     public void backwardWithDistance(double power,int distance){
+
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps = distance*cmPerRotation;
@@ -108,6 +135,10 @@ public class controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDrive.setPower(-power);
         rightDrive.setPower(-power);
+        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
+        stopmotors();
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 
