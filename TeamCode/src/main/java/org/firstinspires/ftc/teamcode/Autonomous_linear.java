@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -37,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -48,7 +50,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -59,12 +63,25 @@ import android.view.View;
 public class Autonomous_linear extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
+
     ColorSensor colorSensor;
+
     private int retract=1;
     private boolean grab_cub_check=true;
+
     controls control = new controls();
 
-    
+    /**For gyro
+     *
+     * **/
+    IntegratingGyroscope gyro;
+    ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+    ElapsedTime timer= new ElapsedTime();
+    /**End
+     *
+     * **/
+
+
     @Override public void runOpMode() {
 
         //setting up motors
@@ -91,6 +108,22 @@ public class Autonomous_linear extends LinearOpMode {
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        //gyro
+        modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+        gyro = (IntegratingGyroscope)modernRoboticsI2cGyro;
+
+        // Wait until the gyro calibration is complete
+        timer.reset();
+        while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating())  {
+            telemetry.addData("calibrating", "%s", Math.round(timer.seconds())%2==0 ? "|.." : "..|");
+            telemetry.update();
+            sleep(50);
+        }
+
+        //
+
+
+        /**Begin**/
         //color sensor configuration
 
         colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
@@ -116,10 +149,23 @@ public class Autonomous_linear extends LinearOpMode {
 
         relicTrackables.activate();
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        /**End**/
+
+
         while (opModeIsActive()) {
 
-            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", colorSensor.red()),colorSensor.green(),colorSensor.blue());
+            AngularVelocity rates = gyro.getAngularVelocity(AngleUnit.DEGREES);
+            float zAngle = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
+            int zAxisOffset = modernRoboticsI2cGyro.getZAxisOffset();
+            int zAxisScalingCoefficient = modernRoboticsI2cGyro.getZAxisScalingCoefficient();
+
+
+
+
+
+            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", colorSensor.red()),colorSensor.green(),colorSensor.blue());
             if(colorSensor.red()>colorSensor.blue()){
                 telemetry.addData("ball color: ","red");
                 if(team_color=="red"){
@@ -138,14 +184,10 @@ public class Autonomous_linear extends LinearOpMode {
                 }
             }
 
-            //while(vuMark == RelicRecoveryVuMark.UNKNOWN){
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            //}
 
-
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 telemetry.addData("DETECTED:","right");
-
             }
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 telemetry.addData("DETECTED:","center");
@@ -154,6 +196,7 @@ public class Autonomous_linear extends LinearOpMode {
                 telemetry.addData("DETECTED:","left");
             }
             telemetry.update();
+
 
             control.rotateLeftDegrees(05,90);
 
