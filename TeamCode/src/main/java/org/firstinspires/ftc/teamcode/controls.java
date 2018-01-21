@@ -110,9 +110,6 @@ public class controls {
         rightDrive.setPower(-power);
     }
 
-
-
-
     public void grabfirst(){
 
         grab_cube_right.setPosition(0.7 );
@@ -147,15 +144,20 @@ public class controls {
         upDrive.setPower(0.0);
     }
 
-
-
-
     public void stop_extend_relic(){
         extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
 
 
+    }
+
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 

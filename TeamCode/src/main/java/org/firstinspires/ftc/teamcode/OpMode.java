@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.concurrent.Delayed;
 
@@ -55,6 +56,7 @@ import java.util.concurrent.Delayed;
  */
 
 @TeleOp(name="OpMode", group="Iterative Opmode" )
+
 
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
@@ -80,6 +82,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
 
     @Override
+
     public void init() {
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -149,7 +152,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_down)
         {
             control.lifter_stop();
-            SystemClock.sleep(10);
+            control.sleep(20);
         }
 
 
@@ -159,7 +162,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_up)
         {
             control.lifter_stop();
-            SystemClock.sleep(10);
+            control.sleep(10);
         }
 
 
@@ -168,11 +171,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_grab_poz = 0.6;
                 relicv_grab.setPosition(0.6);
                 timegrab.reset();
-                SystemClock.sleep(20);
-            } else {
+                control.sleep(20);
+        } else {
                 relicv_grab_poz = 0.2;
                 relicv_grab.setPosition(0.2);
-                SystemClock.sleep(20);
+                control.sleep(20);
                 timegrab.reset();
 
 
@@ -189,14 +192,14 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_up_poz = 0.8;
                 timeup.reset();
                 relicv_up.setPosition(0.8);
-                SystemClock.sleep(20);
+                control.sleep(20);
             }
         
 
         if (gamepad1.right_bumper)
         {
             control.extendDrive.setPower(1);
-            SystemClock.sleep(10);
+
 
         }
         else
@@ -204,7 +207,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             if(!gamepad1.left_bumper)
             {
                 control.extendDrive.setPower(0);
-                SystemClock.sleep(10);
+
             }
         }
 
@@ -214,7 +217,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.right_bumper)
         {
             control.extendDrive.setPower(0);
-            SystemClock.sleep(10);
+
         }
 
         if(gamepad1.x)
