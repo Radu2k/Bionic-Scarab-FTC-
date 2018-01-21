@@ -138,7 +138,6 @@ public class Autonomous_linear extends LinearOpMode {
             }
 
 
-
             else{team_color="blue";
                 telemetry.addData("ball color: ","blue");
             }
