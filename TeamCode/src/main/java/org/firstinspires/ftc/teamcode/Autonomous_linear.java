@@ -68,7 +68,9 @@ public class Autonomous_linear extends LinearOpMode {
     private controls control = new controls();
 
     private String team_color="blue";
-   
+
+    ModernRoboticsI2cGyro mrGyro;
+
 
     @Override public void runOpMode() {
 
@@ -99,6 +101,7 @@ public class Autonomous_linear extends LinearOpMode {
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
 
+
         //colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
         under_colorSensor = hardwareMap.get(ColorSensor.class, "under_colorsensor");
@@ -123,10 +126,10 @@ public class Autonomous_linear extends LinearOpMode {
         control.grab();
 
         control.gyro.calibrate();
-        while(control.gyro.isCalibrating()) {
-            telemetry.addData("Gyro", "Calibrating");
-            sleep(10);
-        }
+
+        telemetry.addData("Gyro", "Calibrating");
+        sleep(10);
+
 
 
 
@@ -166,7 +169,7 @@ public class Autonomous_linear extends LinearOpMode {
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 control.gyroDrive(0.5,0.2,0);
-                //gyro.calibrate();
+                control.gyro.calibrate();
                 control.gyroTurn(0.2,90);
                 control.gyroDrive(0.5,0.2,0);
                 control.grab();
@@ -176,7 +179,7 @@ public class Autonomous_linear extends LinearOpMode {
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 control.gyroDrive(0.5,0.5,0);
-               // gyro.calibrate();
+                control.gyro.calibrate();
                 control.gyroTurn(0.2,90);
                 control.gyroDrive(0.5,0.2,0);
                 control.grab();
@@ -185,7 +188,7 @@ public class Autonomous_linear extends LinearOpMode {
             }
             if(vuMark==RelicRecoveryVuMark.LEFT){
                 control.gyroDrive(0.5,0.8,0);
-              //  gyro.calibrate();
+                control.gyro.calibrate();
                 control.gyroTurn(0.2,90);
                 control.gyroDrive(0.5,0.2,0);
                 control.grab();
@@ -203,9 +206,9 @@ public class Autonomous_linear extends LinearOpMode {
                 telemetry.addData("DETECTED:","left");
             }
 
-//            telemetry.addData("Status", "X" + gyro.rawX());
-//            telemetry.addData("Status", "Y" + gyro.rawY());
-//            telemetry.addData("Status", "Z" + gyro.rawZ());
+            telemetry.addData("Status", "X" + control.gyro.rawX());
+            telemetry.addData("Status", "Y" + control.gyro.rawY());
+            telemetry.addData("Status", "Z" + control.gyro.rawZ());
             telemetry.update();
 
             break;
