@@ -66,9 +66,9 @@ public class Autonomous_linear extends LinearOpMode {
     private ColorSensor colorSensor;
     private ColorSensor under_colorSensor;
     private controls control = new controls();
-    private ModernRoboticsI2cGyro   gyro    = null;
+
     private String team_color="blue";
-    private PushbotAutoDriveByGyro_Linear driveByGyro = new PushbotAutoDriveByGyro_Linear();
+   
 
     @Override public void runOpMode() {
 
@@ -96,10 +96,10 @@ public class Autonomous_linear extends LinearOpMode {
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
 
-        colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        //colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
         under_colorSensor = hardwareMap.get(ColorSensor.class, "under_colorsensor");
 
@@ -122,6 +122,12 @@ public class Autonomous_linear extends LinearOpMode {
 
         control.grab();
 
+        control.gyro.calibrate();
+        while(control.gyro.isCalibrating()) {
+            telemetry.addData("Gyro", "Calibrating");
+            sleep(10);
+        }
+
 
 
         while (opModeIsActive()) {
@@ -131,7 +137,7 @@ public class Autonomous_linear extends LinearOpMode {
             control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", colorSensor.red()),colorSensor.green(),colorSensor.blue());
+            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", under_colorSensor.red()),under_colorSensor.green(),under_colorSensor.blue());
             if(under_colorSensor.red()>under_colorSensor.blue()) {
                 telemetry.addData("ball color: ", "red");
                 team_color = "red";
@@ -147,50 +153,44 @@ public class Autonomous_linear extends LinearOpMode {
             telemetry.addData(">", "Calibrating Gyro");    //
 
             telemetry.update();
-            gyro.calibrate();
-            while (!isStopRequested() && gyro.isCalibrating())  {
-                sleep(50);
-                idle();
-            }
 
-
-
-           /** if((colorSensor.red()>colorSensor.blue()))
-            if(team_color=="red")
-            {
-                driveByGyro.gyroDrive(0.3,0.5,0);
-                driveByGyro.gyroTurn(0.4,90);
-            }
-            else
-            **/
+            control.turnByGyro(0.1,30);
+            /** if((colorSensor.red()>colorSensor.blue()))
+             if(team_color=="red")
+             {
+                 control.gyroDrive(0.3,0.5,0);
+                 control.gyroTurn(0.4,90);
+             }
+             else
+             **/
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                driveByGyro.gyroDrive(0.5,0.2,0);
-                gyro.calibrate();
-                driveByGyro.gyroTurn(0.2,90);
-                driveByGyro.gyroDrive(0.5,0.2,0);
+                control.gyroDrive(0.5,0.2,0);
+                //gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
                 control.grab();
-                driveByGyro.gyroTurn(0.2,-90);
-                driveByGyro.gyroDrive(-1,-0.3,0);
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.3,0);
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
-                driveByGyro.gyroDrive(0.5,0.5,0);
-                gyro.calibrate();
-                driveByGyro.gyroTurn(0.2,90);
-                driveByGyro.gyroDrive(0.5,0.2,0);
+                control.gyroDrive(0.5,0.5,0);
+               // gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
                 control.grab();
-                driveByGyro.gyroTurn(0.2,-90);
-                driveByGyro.gyroDrive(-1,-0.6,0);
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.6,0);
             }
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                driveByGyro.gyroDrive(0.5,0.8,0);
-                gyro.calibrate();
-                driveByGyro.gyroTurn(0.2,90);
-                driveByGyro.gyroDrive(0.5,0.2,0);
+                control.gyroDrive(0.5,0.8,0);
+              //  gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
                 control.grab();
-                driveByGyro.gyroTurn(0.2,-90);
-                driveByGyro.gyroDrive(-1,-0.9,0);
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.9,0);
             }
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
@@ -202,14 +202,11 @@ public class Autonomous_linear extends LinearOpMode {
             if(vuMark==RelicRecoveryVuMark.LEFT){
                 telemetry.addData("DETECTED:","left");
             }
-            telemetry.addData("Status", "X" + gyro.rawX());
-            telemetry.addData("Status", "Y" + gyro.rawY());
-            telemetry.addData("Status", "Z" + gyro.rawZ());
+
+//            telemetry.addData("Status", "X" + gyro.rawX());
+//            telemetry.addData("Status", "Y" + gyro.rawY());
+//            telemetry.addData("Status", "Z" + gyro.rawZ());
             telemetry.update();
-
-
-
-
 
             break;
         }
