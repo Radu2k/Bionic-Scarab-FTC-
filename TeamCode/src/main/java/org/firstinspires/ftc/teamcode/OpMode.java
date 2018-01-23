@@ -72,6 +72,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     
     Servo relicv_up;
     Servo relicv_grab;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -89,6 +90,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
 
         // Tell the driver that initialization is complete.
+
 
         telemetry.addData("Status", "Initialized");
 
@@ -151,8 +153,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         }
 
 
+
         if (gamepad1.dpad_down)
             control.lifter_down();
+
         else
         if(!gamepad1.dpad_up)
         {
