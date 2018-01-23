@@ -155,7 +155,7 @@ public class Controls {
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
 
-           leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
@@ -190,11 +190,11 @@ public class Controls {
 
                 // Display drive status for the driver.
                 /***telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      control.leftDrive.getCurrentPosition(),
-                        control.rightDrive.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
-                telemetry.update();**/
+                 telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
+                 telemetry.addData("Actual",  "%7d:%7d",      control.leftDrive.getCurrentPosition(),
+                 control.rightDrive.getCurrentPosition());
+                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                 telemetry.update();**/
             }
 
             // Stop all motion;
@@ -225,7 +225,7 @@ public class Controls {
         while ( (holdTimer.time() < holdTime)) {
             // Update telemetry & Allow time for other processes to run.
             onHeading(speed, angle, P_TURN_COEFF);
-           // telemetry.update();
+            // telemetry.update();
         }
 
         // Stop all motion;
@@ -260,10 +260,10 @@ public class Controls {
         rightDrive.setPower(rightSpeed);
 
         /**
-        // Display it for the driver.
-        telemetry.addData("Target", "%5.2f", angle);
-        telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
-        telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);**/
+         // Display it for the driver.
+         telemetry.addData("Target", "%5.2f", angle);
+         telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+         telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);**/
 
         return onTarget;
     }
