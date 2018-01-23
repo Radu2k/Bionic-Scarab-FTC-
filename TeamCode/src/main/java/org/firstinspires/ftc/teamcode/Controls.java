@@ -13,6 +13,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.sql.Time;
 
+import static java.lang.Thread.holdsLock;
+import static java.lang.Thread.sleep;
+
 
 public class Controls {
     //dclaring motors
@@ -20,7 +23,7 @@ public class Controls {
     public DcMotor rightDrive = null;
     public DcMotor extendDrive = null;
     public DcMotor upDrive = null;
-    //ModernRoboticsI2cGyro Gyro;
+    ModernRoboticsI2cGyro Gyro;
 
     Servo grab_cube_left;
     Servo grab_cube_right;
@@ -76,7 +79,8 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDrive.setPower(power);
         rightDrive.setPower(power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
+        while(leftDrive.isBusy() && rightDrive.isBusy()){
+        }
         stopmotors();
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -189,5 +193,30 @@ public class Controls {
 
     }
 
+    public void turnLeftByGyro(double power ,double degrees){
+        Gyro.resetZAxisIntegrator();
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setPower(power);
+        leftDrive.setPower(-power);
+        while( degrees > Gyro.getIntegratedZValue()){
+
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+
+    public void turnRightByGyro(double power ,double degrees){
+        Gyro.resetZAxisIntegrator();
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setPower(-power);
+        leftDrive.setPower(power);
+        while( -degrees < Gyro.getIntegratedZValue()){
+
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
 
 }
