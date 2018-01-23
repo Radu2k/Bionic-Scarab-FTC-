@@ -69,7 +69,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     double gamepadright=0.0;
     double retract_extend=0.0;
 
-
+    
     Servo relicv_up;
     Servo relicv_grab;
 
