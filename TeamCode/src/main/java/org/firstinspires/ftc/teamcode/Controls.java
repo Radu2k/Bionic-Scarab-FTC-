@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 import java.sql.Time;
 
 
-public class controls {
+public class Controls {
     //dclaring motors
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -41,7 +41,7 @@ public class controls {
 
     public ElapsedTime timegrab = new ElapsedTime();
 
-    //main navigation function takes in drive as acceleration forward or backward and turn witch controls steering
+    //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
 
     public void navigate(double drive,double turn){
         leftPower = (powerRatio*Range.clip(drive + turn, -1.0, 1.0)+(100.0-powerRatio)*leftPower)/100.0 ;

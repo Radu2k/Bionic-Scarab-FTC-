@@ -31,13 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -64,7 +61,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime timeup=new ElapsedTime();
 
     private int retract=1;
-    controls control = new controls();
+    Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.0;
