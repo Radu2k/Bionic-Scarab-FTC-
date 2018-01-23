@@ -31,10 +31,15 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import java.util.concurrent.Delayed;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -52,6 +57,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="OpMode", group="Iterative Opmode" )
 
+
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
@@ -61,13 +67,14 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime timeup=new ElapsedTime();
 
     private int retract=1;
-    Controls control = new Controls();
+    controls control = new controls();
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.0;
     double gamepadright=0.0;
-    double gamepadleft=0.0;
+    double retract_extend=0.0;
 
+    
     Servo relicv_up;
     Servo relicv_grab;
     /*
@@ -75,6 +82,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
      */
 
     @Override
+
     public void init() {
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -90,9 +98,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -136,57 +142,86 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void loop() {
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
+        double turn = gamepad1.right_stick_x;
 
-        control.navigate(drive,turn);
+        control.navigate(drive, turn);
 
-        if(gamepad1.right_bumper )
+        if (gamepad1.dpad_up)
             control.lifter_up();
-        else control.lifter_stop();
+        else
+        if(!gamepad1.dpad_down)
+        {
+            control.lifter_stop();
+            control.sleep(20);
+        }
 
-        if(gamepad1.left_bumper )
+
+        if (gamepad1.dpad_down)
             control.lifter_down();
-        else control.lifter_stop();
+        else
+        if(!gamepad1.dpad_up)
+        {
+            control.lifter_stop();
+            control.sleep(10);
+        }
 
-        if(gamepad1.a && timegrab.seconds()>0.3)
-            if(relicv_grab_poz==0.2) {
-                relicv_grab_poz=0.6;
+
+        if (gamepad1.a && timegrab.seconds() > 0.3)
+            if (relicv_grab_poz == 0.2) {
+                relicv_grab_poz = 0.6;
                 relicv_grab.setPosition(0.6);
                 timegrab.reset();
+                control.sleep(20);
+        } else {
+                relicv_grab_poz = 0.2;
+                relicv_grab.setPosition(0.2);
+                control.sleep(20);
+                timegrab.reset();
 
-                SystemClock.sleep(20);
-            } else
-              {relicv_grab_poz=0.2;
-               relicv_grab.setPosition(0.2);
-               SystemClock.sleep(20);
-               timegrab.reset();
+
+            }
 
 
-              }
-
-        if(gamepad1.b&& timeup.seconds()>0.3)
-            if(relicv_up_poz==0.8) {
-                relicv_up_poz=0;
+        if (gamepad1.b && timeup.seconds() > 0.3)
+            if (relicv_up_poz == 0.8) {
+                relicv_up_poz = 0;
                 relicv_up.setPosition(0);
                 timeup.reset();
                 SystemClock.sleep(20);
-            }
-            else
-            {
-                relicv_up_poz=0.8;
+            } else {
+                relicv_up_poz = 0.8;
                 timeup.reset();
                 relicv_up.setPosition(0.8);
-                SystemClock.sleep(20);
+                control.sleep(20);
             }
-        gamepadleft=gamepad1.left_trigger;
-        gamepadright=gamepad1.right_trigger;
-        control.extendDrive.setPower(gamepadright);
-        control.extendDrive.setPower(-gamepadleft);
+        
+
+        if (gamepad1.right_bumper)
+        {
+            control.extendDrive.setPower(1);
+
+
+        }
+        else
+        {
+            if(!gamepad1.left_bumper)
+            {
+                control.extendDrive.setPower(0);
+
+            }
+        }
+
+        if(gamepad1.left_bumper )
+            control.extendDrive.setPower(-1);
+        else
+        if(!gamepad1.right_bumper)
+        {
+            control.extendDrive.setPower(0);
+
+        }
 
         if(gamepad1.x)
-         control.grab();
-
-
+            control.grab();
 
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -197,8 +232,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "servo right"+control.grab_cube_right.getPosition());
         telemetry.addData("Status", "servo up"+relicv_up.getPosition());
         telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
-        telemetry.addData("Status", String.format("right trig" + gamepad1.right_bumper));
-        telemetry.addData("Status",String.format("left trig" + gamepad1.left_bumper));
+        telemetry.addData("Status", String.format("right trig" + ((boolean) gamepad1.right_bumper)));
+        telemetry.addData("Status",String.format("left trig" + ((boolean) gamepad1.left_bumper)));
 
     }
     /*
