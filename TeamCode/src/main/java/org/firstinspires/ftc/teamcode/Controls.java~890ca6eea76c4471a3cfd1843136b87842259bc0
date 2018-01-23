@@ -17,10 +17,6 @@ import static java.lang.Thread.holdsLock;
 import static java.lang.Thread.sleep;
 
 
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Controls.java
-
-=======
->>>>>>> 890ca6eea76c4471a3cfd1843136b87842259bc0:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/controls.java
 public class Controls {
     //dclaring motors
     public DcMotor leftDrive = null;
@@ -45,8 +41,6 @@ public class Controls {
     private boolean grab_cub_check=true;
 
     public ElapsedTime timeextend = new ElapsedTime();
-
-
 
     public ElapsedTime timegrab = new ElapsedTime();
 
@@ -219,6 +213,7 @@ public class Controls {
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
         while( -degrees < Gyro.getIntegratedZValue()){
+
 
         }
         leftDrive.setPower(0);
