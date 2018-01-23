@@ -42,12 +42,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-
-@Autonomous(name="Autonomous", group ="Autonomous")
+@Autonomous(name="a_linear", group ="Autonomous")
 public class Autonomous_linear extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
-<<<<<<< HEAD
     private ColorSensor colorSensor;
     private ColorSensor under_colorSensor;
     private Controls control = new Controls();
@@ -57,21 +55,17 @@ public class Autonomous_linear extends LinearOpMode {
     ModernRoboticsI2cGyro mrGyro;
 
 
-=======
-    ColorSensor colorSensor;
-    private int retract=1;
-    private boolean grab_cub_check=true;
-    Controls control = new Controls();
-    PushbotAutoDriveByEncoder_Linear move=new PushbotAutoDriveByEncoder_Linear();
-    
-
     @Override public void runOpMode() {
 
         //setting up motors
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        control.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        control.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -87,84 +81,120 @@ public class Autonomous_linear extends LinearOpMode {
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        //color sensor configuration
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
-        colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-        boolean ball_color =true; //meaning the ball is the same color as the team
-        String team_color="blue";
+
+
+        //colorSensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+
+        under_colorSensor = hardwareMap.get(ColorSensor.class, "under_colorsensor");
 
         // vumark configuration
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
         parameters.vuforiaLicenseKey = "AW9KAvX/////AAAAGSoAGMf4Dkz0hJ7OIMefI9w9qAkRHuDZBtDVnai4mtg/RUSwT94QTlOFFGJoaF55C1C+aponf8pYfTkVDKBGsGosyfQp1JQZvagKfsyLIYgs8pmZ7GYk7zCjZ1AN3mnmg8558Z/G7SwsaEgCJD2TLmsWYxaKe8PmDLPvRB57dJSJ30lhP9mhPoBmJo0futlynTkzNIn18MR0+DnCCbSIY3UPiwePzC3/AOZyEMV2mVfC/poxmEN+r1cbTCQ4fbjG6OgD0yS7yK9U3VhI97jJJ673neGOyBRJNQqvgdVT/SkjjnlCGVyYrk9nDmiqxQQq8Zju4/CkjodjuRnIBxhc2cWfNbVIQLOBl6LlL9c4Rnh9";
-
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        //
 
-        //gyro configuration and calibration
-        control.Gyro=(ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
-        control.Gyro.calibrate();
-        telemetry.addData("gyro is calibrating","");
-        while(control.Gyro.isCalibrating()){
-            sleep(10);
-        }
-        telemetry.addData("gyro calibrated","");
+        telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
 
         relicTrackables.activate();
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        control.grab();
+
+        control.gyro.calibrate();
+
+        telemetry.addData("Gyro", "Calibrating");
+        sleep(10);
+
+
+
+
         while (opModeIsActive()) {
+            control.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            control.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+            control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            if(colorSensor.red()>colorSensor.blue()){
-                telemetry.addData("ball color: ","red");
-                if(team_color=="red"){
-                    ball_color=true;
-                }else{
-                    ball_color=false;
-                }
-            }else{
-                if(colorSensor.blue()>colorSensor.red()){
-                    telemetry.addData("ball color: ","blue");
-                    if(team_color=="blue"){
-                        ball_color=true;
-                    }else{
-                        ball_color=false;
-                    }
-                }
+            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", under_colorSensor.red()),under_colorSensor.green(),under_colorSensor.blue());
+            if(under_colorSensor.red()>under_colorSensor.blue()) {
+                telemetry.addData("ball color: ", "red");
+                team_color = "red";
             }
 
-            //while(vuMark == RelicRecoveryVuMark.UNKNOWN){
-                //vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            //}
 
+            else{team_color="blue";
+                telemetry.addData("ball color: ","blue");
+            }
 
-//            if(vuMark==RelicRecoveryVuMark.RIGHT){
-//                telemetry.addData("DETECTED:","right");
-//
-//            }
-//            if(vuMark==RelicRecoveryVuMark.CENTER){
-//                telemetry.addData("DETECTED:","center");
-//            }
-//            if(vuMark==RelicRecoveryVuMark.LEFT){
-//                telemetry.addData("DETECTED:","left");
-//            }
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+            telemetry.addData(">", "Calibrating Gyro");    //
+
             telemetry.update();
-//            for(int i=0;i<4;i++){
-//                control.forewordWithDistance(0.7,30);
-//                telemetry.addData("Going ","Foreward");
-//                control.turnRightByGyro(0.7,90);
-//                telemetry.addData("Going ","Right");
-//                telemetry.update();
-//
-//            }
-            telemetry.addData("motor:" ,control.leftDrive.getCurrentPosition());
 
+            control.turnByGyro(0.1,30);
+            /** if((colorSensor.red()>colorSensor.blue()))
+             if(team_color=="red")
+             {
+                 control.gyroDrive(0.3,0.5,0);
+                 control.gyroTurn(0.4,90);
+             }
+             else
+             **/
+
+            if(vuMark==RelicRecoveryVuMark.RIGHT){
+                control.gyroDrive(0.5,0.2,0);
+                control.gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
+                control.grab();
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.3,0);
+            }
+
+            if(vuMark==RelicRecoveryVuMark.CENTER){
+                control.gyroDrive(0.5,0.5,0);
+                control.gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
+                control.grab();
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.6,0);
+            }
+            if(vuMark==RelicRecoveryVuMark.LEFT){
+                control.gyroDrive(0.5,0.8,0);
+                control.gyro.calibrate();
+                control.gyroTurn(0.2,90);
+                control.gyroDrive(0.5,0.2,0);
+                control.grab();
+                control.gyroTurn(0.2,-90);
+                control.gyroDrive(-1,-0.9,0);
+            }
+
+            if(vuMark==RelicRecoveryVuMark.RIGHT){
+                telemetry.addData("DETECTED:","right");
+            }
+            if(vuMark==RelicRecoveryVuMark.CENTER){
+                telemetry.addData("DETECTED:","center");
+            }
+            if(vuMark==RelicRecoveryVuMark.LEFT){
+                telemetry.addData("DETECTED:","left");
+            }
+
+            telemetry.addData("Status", "X" + control.gyro.rawX());
+            telemetry.addData("Status", "Y" + control.gyro.rawY());
+            telemetry.addData("Status", "Z" + control.gyro.rawZ());
+            telemetry.update();
+
+            break;
         }
     }
 
