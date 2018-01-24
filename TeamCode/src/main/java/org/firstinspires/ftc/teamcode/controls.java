@@ -67,92 +67,54 @@ public class Controls {
         rightDrive.setPower(0);
     }
 
-    public void forewordWithDistance(double power ,int distance){
-
+    private void moveDistance(int stepLeft, int stepRight, double powerLeft, double powerRight, int distance) {
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps = distance*cmPerRotation;
-        int step = (int) steps;
-        leftDrive.setTargetPosition(step);
-        rightDrive.setTargetPosition(step);
+        
+        leftDrive.setTargetPosition(stepLeft);
+        rightDrive.setTargetPosition(stepRight);
+        
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(power);
-        rightDrive.setPower(power);
+        
+        leftDrive.setPower(powerLeft);
+        rightDrive.setPower(powerRight);
+        
         while(leftDrive.isBusy() && rightDrive.isBusy()){
         }
         stopmotors();
+        
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    
+    public void forewordWithDistance(double power ,int distance){
+        double steps = distance * cmPerRotation;
+        int step = (int) steps;
+        moveDistance(step, step, power, power, distance);
     }
 
     public void rotateLeftDegrees(double power, int degrees){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps=degrees*degreesPerRotation*cmPerRotation;
-        int s= (int) steps*offset;
-        leftDrive.setTargetPosition(-s);
-        rightDrive.setTargetPosition(s);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(-power);
-        rightDrive.setPower(power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        double steps = degrees * degreesPerRotation * cmPerRotation;
+        int step = (int) steps * offset;
+        moveDistance(-step, step, -power, power, distance);
     }
 
     public void rotateRightDegrees(double power ,int degrees){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps=degrees*degreesPerRotation*cmPerRotation;
-        int s= (int) steps*offset;
-        leftDrive.setTargetPosition(s);
-        rightDrive.setTargetPosition(-s);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(power);
-        rightDrive.setPower(-power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void rotateLeftWithGyro(double power,int degrees){
-
+        double steps = degrees * degreesPerRotation * cmPerRotation;
+        int step = (int) steps * offset;
+        moveDistance(step, -step, power, -power, distance);
     }
 
     public void backwardWithDistance(double power,int distance){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps = distance*cmPerRotation;
+        double steps = distance * cmPerRotation;
         int step = (int) steps;
-        leftDrive.setTargetPosition(-step);
-        rightDrive.setTargetPosition(-step);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(-power);
-        rightDrive.setPower(-power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        moveDistance(-step, -step, -power, -power, distance);
     }
 
-
-
-
     public void grabfirst(){
-
         grab_cube_right.setPosition(0.7 );
         grab_cube_left.setPosition(0.2 );
-
     }
 
     public void grab(){
@@ -182,41 +144,31 @@ public class Controls {
         upDrive.setPower(0.0);
     }
 
-
-
-
     public void stop_extend_relic(){
         extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
-
-
     }
 
-    public void turnLeftByGyro(double power ,double degrees){
+    private void turnByGyro(double powerLeft, double powerRight, double degrees) {
         Gyro.resetZAxisIntegrator();
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(power);
-        leftDrive.setPower(-power);
-        while( degrees > Gyro.getIntegratedZValue()){
+        leftDrive.setPower(powerLeft);
+        rightDrive.setPower(powerRight);
+        while(degrees > Gyro.getIntegratedZValue()){
 
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+    }
+    
+    public void turnLeftByGyro(double power ,double degrees){
+        turnByGyro(-power, power, degrees);
     }
 
     public void turnRightByGyro(double power ,double degrees){
-        Gyro.resetZAxisIntegrator();
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(-power);
-        leftDrive.setPower(power);
-        while( -degrees < Gyro.getIntegratedZValue()){
-
-        }
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+        turnByGyro-power, -power, -degrees);
     }
 
 }
