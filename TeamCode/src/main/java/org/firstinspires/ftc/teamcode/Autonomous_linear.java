@@ -126,31 +126,11 @@ public class Autonomous_linear extends LinearOpMode {
                 }
             }
 
-            //while(vuMark == RelicRecoveryVuMark.UNKNOWN){
-                //vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            //}
-
-
-//            if(vuMark==RelicRecoveryVuMark.RIGHT){
-//                telemetry.addData("DETECTED:","right");
-//
-//            }
-//            if(vuMark==RelicRecoveryVuMark.CENTER){
-//                telemetry.addData("DETECTED:","center");
-//            }
-//            if(vuMark==RelicRecoveryVuMark.LEFT){
-//                telemetry.addData("DETECTED:","left");
-//            }
             telemetry.update();
-//            for(int i=0;i<4;i++){
-//                control.forewordWithDistance(0.7,30);
-//                telemetry.addData("Going ","Foreward");
-//                control.turnRightByGyro(0.7,90);
-//                telemetry.addData("Going ","Right");
-//                telemetry.update();
-//
-//            }
-            telemetry.addData("motor:" ,control.leftDrive.getCurrentPosition());
+            for(int i=0;i<4;i++){
+                control.turnRightByGyro(0.7,90);
+                control.moveByTime(0.7,1500);
+            }
 
         }
     }

@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import java.sql.Time;
+//import java.sql.Time;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static java.lang.Thread.holdsLock;
 import static java.lang.Thread.sleep;
@@ -217,6 +218,18 @@ public class Controls {
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+    }
+
+
+    public void moveByTime(double power,int time){
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setPower(power);
+        leftDrive.setPower(power);
+        SystemClock.sleep(time);
+        rightDrive.setPower(0);
+        leftDrive.setPower(0);
+
     }
 
 }
