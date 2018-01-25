@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -51,9 +52,12 @@ public class Controls {
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-
+    private int ZAccumulated;
 
     private boolean grab_cub_check=true;
+
+
+
 
     public ElapsedTime timeextend = new ElapsedTime();
 
@@ -68,7 +72,7 @@ public class Controls {
         rightPower = (powerRatio*Range.clip(drive - turn, -1.0, 1.0)+(100.0-powerRatio)*rightPower)/100.0;
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
-        //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        //hwMap.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 
     public void lifter_up(){
@@ -167,6 +171,14 @@ public class Controls {
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+    }
+
+    public void forward_autononomous(double power, double distance)
+    {
+        while(gyro.isCalibrating());
+
+
+
     }
 
 }
