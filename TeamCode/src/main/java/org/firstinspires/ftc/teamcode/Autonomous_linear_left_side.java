@@ -28,6 +28,8 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -157,6 +159,7 @@ public class Autonomous_linear_left_side extends LinearOpMode {
                 telemetry.addData("ball color: ","blue");
             }
 
+            relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
             while (vuMark==RelicRecoveryVuMark.UNKNOWN){
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -183,29 +186,37 @@ public class Autonomous_linear_left_side extends LinearOpMode {
             }
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                autonomousmove(FORWARD_SPEED,2);
-                autonomousturnright(TURN_SPEED,1.3);
+                autonomousmove(FORWARD_SPEED,0.8);
+                autonomousturnright(-TURN_SPEED,0.1);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
-                autonomousmove(-1,2);
+                autonomousturnleft(-TURN_SPEED,0.1);
+                autonomousmove(-1,0.8);
 
 
             }
 
- //           if(vuMark==RelicRecoveryVuMark.CENTER){
-                autonomousmove(FORWARD_SPEED,3);
-                autonomousturnright(TURN_SPEED,1.3);
+            if(vuMark==RelicRecoveryVuMark.CENTER){
+                autonomousmove(FORWARD_SPEED,0.5);
+                autonomousturnright(-TURN_SPEED,0.1);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
-                autonomousmove(-1,3);
+                autonomousturnleft(-TURN_SPEED,0.1);
+                autonomousmove(-1,0.5);}
 
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(FORWARD_SPEED,4);
-                autonomousturnright(TURN_SPEED,1.3);
+                autonomousmove(FORWARD_SPEED,1);
+                autonomousmove(0,3);
+
+                autonomousturnright(-TURN_SPEED,0.6);
+                autonomousmove(0,3);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
-                autonomousmove(-1,4);
+                autonomousturnleft(-TURN_SPEED,0.6);
+                autonomousmove(0,3);
+
+                autonomousmove(-FORWARD_SPEED,1);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
             }
 
 
