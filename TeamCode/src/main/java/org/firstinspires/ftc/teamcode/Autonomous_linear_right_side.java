@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name="a_linear", group ="Autonomous")
+@Autonomous(name="a_linear_right", group ="Autonomous")
 public class Autonomous_linear_right_side extends LinearOpMode {
 
     private ColorSensor under_colorSensor;
