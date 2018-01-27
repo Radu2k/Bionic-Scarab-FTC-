@@ -56,6 +56,11 @@ public class Controls {
         this.grab_cube_left = hardwareMap.get(Servo.class,"grab_cube_left");
         this.grab_cube_right = hardwareMap.get(Servo.class,"grab_cube_right");
         telemetry.addData("set up grab servos","");
+
+        this.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        this.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        this.upDrive.setDirection(DcMotor.Direction.FORWARD);
+        this.extendDrive.setDirection(DcMotor.Direction.FORWARD);
     }
     
     //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
