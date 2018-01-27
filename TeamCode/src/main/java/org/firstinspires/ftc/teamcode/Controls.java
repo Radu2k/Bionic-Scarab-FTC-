@@ -29,7 +29,6 @@ public class Controls {
     Servo grab_cube_left;
     Servo grab_cube_right;
 
-
     //declaring tunning variables
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
@@ -39,12 +38,31 @@ public class Controls {
     private double rightPower;
     private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
 
-    private boolean grab_cub_check=true;
+    private boolean grab_cub_check = true;
 
     public ElapsedTime timeextend = new ElapsedTime();
-
     public ElapsedTime timegrab = new ElapsedTime();
 
+    Controls(){
+        
+        this.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        this.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        telemetry.addData("set up drive engines","");
+
+        this.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+        this.extendDrive = hardwareMap.get(DcMotor.class, "extend_drive");
+        telemetry.addData("set up lifter and extender engines ","");
+
+        this.grab_cube_left = hardwareMap.get(Servo.class,"grab_cube_left");
+        this.grab_cube_right = hardwareMap.get(Servo.class,"grab_cube_right");
+        telemetry.addData("set up grab servos","");
+
+        this.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        this.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        this.upDrive.setDirection(DcMotor.Direction.FORWARD);
+        this.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+    }
+    
     //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
 
     public void navigate(double drive,double turn){
@@ -68,18 +86,15 @@ public class Controls {
         rightDrive.setPower(0);
     }
 
-    public void forewordWithDistance(double power ,int distance){
-
+    private void moveDistance(int leftStep, int rightStep, double leftPower, double rightPower, double distance) {
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps = distance*cmPerRotation;
-        int step = (int) steps;
-        leftDrive.setTargetPosition(step);
-        rightDrive.setTargetPosition(step);
+        leftDrive.setTargetPosition(leftStep);
+        rightDrive.setTargetPosition(rightStep);
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(power);
-        rightDrive.setPower(power);
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
         while(leftDrive.isBusy() && rightDrive.isBusy()){
         }
         stopmotors();
@@ -87,70 +102,39 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void forewordWithDistance(double power, int distance){
+        double steps = distance * cmPerRotation;
+        int step = (int) steps;
+        moveDistance(step, step, power, power, distance);
+    }
+
     public void rotateLeftDegrees(double power, int degrees){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps=degrees*degreesPerRotation*cmPerRotation;
-        int s= (int) steps*offset;
-        leftDrive.setTargetPosition(-s);
-        rightDrive.setTargetPosition(s);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(-power);
-        rightDrive.setPower(power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+         /* sidenote:
+            In implementatia originala era:
+            > leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            in loc de versiunea folosita de restul functiilor:
+            > leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            Intentionat sau bug?
+         */
+        double steps = degrees * degreesPerRotation * cmPerRotation;
+        int step = (int) steps*offset;
+        moveDistance(-step, step, -power, power, distance);
     }
 
     public void rotateRightDegrees(double power ,int degrees){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps=degrees*degreesPerRotation*cmPerRotation;
-        int s= (int) steps*offset;
-        leftDrive.setTargetPosition(s);
-        rightDrive.setTargetPosition(-s);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(power);
-        rightDrive.setPower(-power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void rotateLeftWithGyro(double power,int degrees){
-
+        // originalul nu folosea run encoded pt right motor, bug?
+        double steps = degrees * degreesPerRotation * cmPerRotation;
+        int step = (int) steps * offset;
+        moveDistance(step, -step, power, -power, distance);
     }
 
     public void backwardWithDistance(double power,int distance){
-
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double steps = distance*cmPerRotation;
         int step = (int) steps;
-        leftDrive.setTargetPosition(-step);
-        rightDrive.setTargetPosition(-step);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(-power);
-        rightDrive.setPower(-power);
-        while(leftDrive.isBusy() && rightDrive.isBusy()){;}
-        stopmotors();
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        moveDistance(-step, -step, -power, -power, distance);
     }
 
-
-
-
     public void grabfirst(){
-
         grab_cube_right.setPosition(0.7 );
         grab_cube_left.setPosition(0.2 );
 
@@ -183,23 +167,18 @@ public class Controls {
         upDrive.setPower(0.0);
     }
 
-
-
-
     public void stop_extend_relic(){
         extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
-
-
     }
 
-    public void turnLeftByGyro(double power ,double degrees){
+    private void turnByGyro(double leftPower, double rightPower, double degrees){
         Gyro.resetZAxisIntegrator();
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(power);
-        leftDrive.setPower(-power);
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
         while( degrees > Gyro.getIntegratedZValue()){
 
         }
@@ -207,19 +186,13 @@ public class Controls {
         rightDrive.setPower(0);
     }
 
-    public void turnRightByGyro(double power ,double degrees){
-        Gyro.resetZAxisIntegrator();
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(-power);
-        leftDrive.setPower(power);
-        while( -degrees < Gyro.getIntegratedZValue()){
-
-        }
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+    public void turnLeftByGyro(double power ,double degrees){
+        turnByGyro(-power, power, degrees);
     }
 
+    public void turnRightByGyro(double power ,double degrees){
+        turnByGyro(power, -power, -degrees);
+    }
 
     public void moveByTime(double power,int time){
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -229,7 +202,6 @@ public class Controls {
         SystemClock.sleep(time);
         rightDrive.setPower(0);
         leftDrive.setPower(0);
-
     }
 
 }
