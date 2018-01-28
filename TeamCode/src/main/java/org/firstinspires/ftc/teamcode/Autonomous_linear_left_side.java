@@ -187,33 +187,55 @@ public class Autonomous_linear_left_side extends LinearOpMode {
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 autonomousmove(FORWARD_SPEED,0.8);
-                autonomousturnright(-TURN_SPEED,0.1);
-                control.grab();
-                autonomousturnleft(-TURN_SPEED,0.1);
-                autonomousmove(-1,0.8);
+                autonomousmove(0,3);
 
+                control.turnLeftByGyro(TURN_SPEED,90);
+                autonomousmove(0,3);
+
+                control.grab();
+
+                control.turnRightByGyro(TURN_SPEED,90);
+                autonomousmove(0,3);
+
+                autonomousmove(-1,0.8);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
 
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 autonomousmove(FORWARD_SPEED,0.5);
-                autonomousturnright(-TURN_SPEED,0.1);
+                autonomousmove(0,3);
+
+                control.turnLeftByGyro(TURN_SPEED,90);
+                autonomousmove(0,3);
+
                 control.grab();
-                autonomousturnleft(-TURN_SPEED,0.1);
-                autonomousmove(-1,0.5);}
+
+                control.turnRightByGyro(TURN_SPEED,90);
+                autonomousmove(0,3);
+
+                autonomousmove(-1,0.5);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
+            }
 
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(FORWARD_SPEED,1);
+                autonomousmove(FORWARD_SPEED,0.3);
                 autonomousmove(0,3);
 
-                autonomousturnright(-TURN_SPEED,0.6);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
+
                 control.grab();
-                autonomousturnleft(-TURN_SPEED,0.6);
+
+                control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
-                autonomousmove(-FORWARD_SPEED,1);
+                autonomousmove(-1,0.3);
                 autonomousmove(0,3);
 
                 autonomousmove(FORWARD_SPEED,0.0);

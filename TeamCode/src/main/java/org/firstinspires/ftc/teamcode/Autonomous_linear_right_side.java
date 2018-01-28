@@ -137,6 +137,8 @@ public class Autonomous_linear_right_side extends LinearOpMode {
         control.grab();
 
         control.gyro.calibrate();
+        while (control.gyro.isCalibrating())
+            sleep(5);
         telemetry.addData("Gyro", "Calibrating");
         sleep(10);
 
@@ -169,7 +171,7 @@ public class Autonomous_linear_right_side extends LinearOpMode {
              **/
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                telemetry.addData("DETECTED:","right");
+                telemetry.addData("DETECTED:","r  ight");
             }
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 telemetry.addData("DETECTED:","center");
@@ -180,9 +182,9 @@ public class Autonomous_linear_right_side extends LinearOpMode {
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 autonomousmove(FORWARD_SPEED,2);
-                autonomousturnright(TURN_SPEED,1.3);
+                control.turnRightByGyro(TURN_SPEED,90);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(-1,2);
 
 
@@ -190,17 +192,17 @@ public class Autonomous_linear_right_side extends LinearOpMode {
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 autonomousmove(FORWARD_SPEED,3);
-                autonomousturnright(TURN_SPEED,1.3);
+                control.turnRightByGyro(TURN_SPEED,90);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(-1,3);
             }
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
                 autonomousmove(FORWARD_SPEED,4);
-                autonomousturnright(TURN_SPEED,1.3);
+                control.turnRightByGyro(TURN_SPEED,90);
                 control.grab();
-                autonomousturnleft(TURN_SPEED,1.3);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(-1,4);
             }
 

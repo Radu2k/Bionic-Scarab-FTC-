@@ -27,6 +27,7 @@ public class Controls {
 
     Servo grab_cube_left;
     Servo grab_cube_right;
+    Servo ball_servo;
 
 
     //declaring tunning variables
@@ -55,6 +56,7 @@ public class Controls {
     private int ZAccumulated;
 
     private boolean grab_cub_check=true;
+    private boolean ball_arm_check=true;
 
 
 
@@ -64,6 +66,7 @@ public class Controls {
 
 
     public ElapsedTime timegrab = new ElapsedTime();
+    public ElapsedTime timeball=new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
 
@@ -104,25 +107,15 @@ public class Controls {
 
     }
 
-    public void grab(){
+    public void ballArmRetract(){
         if(timegrab.seconds()>0.3) {
-            if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.6);
-
-                grab_cube_left.setPosition(0.3);
+            if (ball_arm_check == true) {
+                ball_servo.setPosition(0);
                 grab_cub_check = false;
                 timegrab.reset();
                 timegrab.startTime();
-
-            } else {
-
-                grab_cube_right.setPosition( 0.9);
-                grab_cube_left.setPosition(-0.1);
-
-                grab_cub_check = true;
-                timegrab.reset();
-                timegrab.startTime();
             }
+            grab_cub_check = true;
         }
     }
 
@@ -154,7 +147,7 @@ public class Controls {
         rightDrive.setPower(power);
         leftDrive.setPower(-power);
         while( degrees > gyro.getIntegratedZValue()){
-
+            sleep(20);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -167,10 +160,33 @@ public class Controls {
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
         while( -degrees < gyro.getIntegratedZValue()){
-
+            sleep(20);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+    }
+
+    void extendBallArm(){
+        if(timegrab.seconds()>0.3) {
+            if (grab_cub_check == true) {
+                grab_cube_right.setPosition(0.6);
+
+                grab_cube_left.setPosition(0.3);
+                grab_cub_check = false;
+                timegrab.reset();
+                timegrab.startTime();
+
+            } else {
+
+                grab_cube_right.setPosition( 0.9);
+                grab_cube_left.setPosition(-0.1);
+
+                grab_cub_check = true;
+                timegrab.reset();
+                timegrab.startTime();
+            }
+        }
+
     }
 
     public void forward_autononomous(double power, double distance)
