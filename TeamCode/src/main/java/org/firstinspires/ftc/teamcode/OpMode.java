@@ -31,15 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import java.util.concurrent.Delayed;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -67,16 +62,17 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime timeup=new ElapsedTime();
 
     private int retract=1;
-    controls control = new controls();
+    Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.0;
     double gamepadright=0.0;
     double retract_extend=0.0;
 
-    
+
     Servo relicv_up;
     Servo relicv_grab;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -94,6 +90,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
 
         // Tell the driver that initialization is complete.
+
 
         telemetry.addData("Status", "Initialized");
 
@@ -156,8 +153,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         }
 
 
+
         if (gamepad1.dpad_down)
             control.lifter_down();
+
         else
         if(!gamepad1.dpad_up)
         {
