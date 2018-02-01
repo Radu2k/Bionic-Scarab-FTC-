@@ -12,7 +12,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import java.sql.Time;
+//import java.sql.Time;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 
@@ -31,6 +32,7 @@ public class Controls {
 
 
     //declaring tunning variables
+    static  double CLOSE_ENOUGH_TO_ZERO=3.5;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private int offset=2;
@@ -136,7 +138,7 @@ public class Controls {
         extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
-
+;
 
     }
 
@@ -154,8 +156,10 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(power);
         leftDrive.setPower(-power);
-        while( degrees > gyro.getIntegratedZValue()){
-            sleep(20);
+        while( degrees > Gyro.getIntegratedZValue()){
+            if(degrees-Gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
+                break;
+
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -167,12 +171,15 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
-        while( -degrees < gyro.getIntegratedZValue()){
-            sleep(20);
+        while( -degrees < Gyro.getIntegratedZValue()){
+            if(degrees+Gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
+                break;
+
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
+
 
     public void stopBallArm(){
         if(timeball.seconds()>0.3) {
@@ -180,6 +187,18 @@ public class Controls {
             grab_cub_check = false;
             timeball.reset();
             timeball.startTime();
+
+
+    public void moveByTime(double power,int time){
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setPower(power);
+        leftDrive.setPower(power);
+        SystemClock.sleep(time);
+        rightDrive.setPower(0);
+        leftDrive.setPower(0);
+    }
+
         }
     }
 
@@ -190,14 +209,6 @@ public class Controls {
             timeball.reset();
             timeball.startTime();
         }
-    }
-
-    public void forward_autononomous(double power, double distance)
-    {
-        while(gyro.isCalibrating());
-
-
-
     }
 
 }

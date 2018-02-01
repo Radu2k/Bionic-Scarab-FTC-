@@ -151,7 +151,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_down)
         {
             control.lifter_stop();
-            control.sleep(20);
+            //control.sleep(20);
         }
 
 
@@ -163,7 +163,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_up)
         {
             control.lifter_stop();
-            control.sleep(10);
+            //control.sleep(10);
         }
 
 
@@ -172,11 +172,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 relicv_grab_poz = 0.8;
                 relicv_grab.setPosition(0.8);
                 timegrab.reset();
-                control.sleep(20);
+                //control.sleep(20);
         } else {
                 relicv_grab_poz = 0.2;
                 relicv_grab.setPosition(0.2);
-                control.sleep(20);
+                //control.sleep(20);
                 timegrab.reset();
 
 
@@ -192,8 +192,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             } else {
                 relicv_up_poz =1;
                 timeup.reset();
+
                 relicv_up.setPosition(1);
                 control.sleep(20);
+
             }
         
 

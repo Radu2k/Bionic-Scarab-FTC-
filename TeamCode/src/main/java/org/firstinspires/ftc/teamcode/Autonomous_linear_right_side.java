@@ -208,10 +208,18 @@ public class Autonomous_linear_right_side extends LinearOpMode {
 
 
 
+<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous_linear.java
+            telemetry.update();
+            for(int i=0;i<4;i++){
+                control.turnRightByGyro(0.7,90);
+                control.moveByTime(0.7,1500);
+            }
+=======
             telemetry.addData("Status", "X" + control.gyro.rawX());
             telemetry.addData("Status", "Y" + control.gyro.rawY());
             telemetry.addData("Status", "Z" + control.gyro.rawZ());
             telemetry.update();
+>>>>>>> origin/Radu:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous_linear_right_side.java
 
             break;
         }
