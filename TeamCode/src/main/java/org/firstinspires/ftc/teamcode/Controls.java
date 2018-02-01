@@ -182,7 +182,7 @@ public class Controls {
         rightDrive.setPower(0);
         leftDrive.setPower(0);
     }
-    void extendBallArm(){
+    void grab(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
                 grab_cube_right.setPosition(0.6);
