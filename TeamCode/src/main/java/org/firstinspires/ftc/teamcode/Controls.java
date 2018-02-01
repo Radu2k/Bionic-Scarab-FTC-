@@ -148,14 +148,10 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(power);
         leftDrive.setPower(-power);
-<<<<<<< HEAD
         while( degrees > Gyro.getIntegratedZValue()){
             if(degrees-Gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
                 break;
-=======
-        while( degrees > gyro.getIntegratedZValue()){
-            sleep(20);
->>>>>>> origin/Radu
+
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -167,21 +163,15 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
-<<<<<<< HEAD
         while( -degrees < Gyro.getIntegratedZValue()){
             if(degrees+Gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
                 break;
 
-=======
-        while( -degrees < gyro.getIntegratedZValue()){
-            sleep(20);
->>>>>>> origin/Radu
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
 
-<<<<<<< HEAD
 
     public void moveByTime(double power,int time){
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -191,7 +181,7 @@ public class Controls {
         SystemClock.sleep(time);
         rightDrive.setPower(0);
         leftDrive.setPower(0);
-=======
+    }
     void extendBallArm(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
@@ -212,15 +202,6 @@ public class Controls {
                 timegrab.startTime();
             }
         }
-
-    }
-
-    public void forward_autononomous(double power, double distance)
-    {
-        while(gyro.isCalibrating());
-
-
->>>>>>> origin/Radu
 
     }
 
