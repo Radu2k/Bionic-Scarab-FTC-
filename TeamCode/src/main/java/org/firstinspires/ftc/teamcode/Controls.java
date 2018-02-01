@@ -39,7 +39,7 @@ public class Controls {
     private double cmPerRotation=13.333333333333333;
     private double degreesPerRotation=0.3141592653589793;
     private double rightPower;
-    private double powerRatio=99.0;//acceleration value the closer to 100 the faster the acceleration
+    private double powerRatio=97.0;//acceleration value the closer to 100 the faster the acceleration
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
@@ -104,20 +104,28 @@ public class Controls {
 
     public void grabfirst(){
 
-        grab_cube_right.setPosition(0.7 );
-        grab_cube_left.setPosition(0.2 );
+        grab_cube_right.setPosition(0.9);
+        grab_cube_left.setPosition(0.0);
 
     }
 
-    public void ballArmRetract(){
+    public void grab(){
         if(timegrab.seconds()>0.3) {
-            if (ball_arm_check == true) {
-                ball_servo.setPosition(0);
+            if (grab_cub_check == true) {
+                grab_cube_right.setPosition(0.4);
+                grab_cube_left.setPosition(0.5);
                 grab_cub_check = false;
                 timegrab.reset();
                 timegrab.startTime();
+
+            } else {
+
+                grab_cube_right.setPosition( 0.7);
+                grab_cube_left.setPosition(0.1);
+                grab_cub_check = true;
+                timegrab.reset();
+                timegrab.startTime();
             }
-            grab_cub_check = true;
         }
     }
 
@@ -173,6 +181,14 @@ public class Controls {
     }
 
 
+    public void stopBallArm(){
+        if(timeball.seconds()>0.3) {
+            ball_servo.setPosition(0.5);
+            grab_cub_check = false;
+            timeball.reset();
+            timeball.startTime();
+
+
     public void moveByTime(double power,int time){
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -182,27 +198,17 @@ public class Controls {
         rightDrive.setPower(0);
         leftDrive.setPower(0);
     }
-    void grab(){
-        if(timegrab.seconds()>0.3) {
-            if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.6);
 
-                grab_cube_left.setPosition(0.3);
-                grab_cub_check = false;
-                timegrab.reset();
-                timegrab.startTime();
-
-            } else {
-
-                grab_cube_right.setPosition( 0.9);
-                grab_cube_left.setPosition(-0.1);
-
-                grab_cub_check = true;
-                timegrab.reset();
-                timegrab.startTime();
-            }
         }
+    }
 
+    public void goBallArm(){
+        if(timeball.seconds()>0.3) {
+            ball_servo.setPosition(0);
+            grab_cub_check = false;
+            timeball.reset();
+            timeball.startTime();
+        }
     }
 
 }
