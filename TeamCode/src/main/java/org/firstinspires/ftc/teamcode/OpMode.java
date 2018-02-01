@@ -65,7 +65,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
-    double relicv_up_poz=0.0;
+    double relicv_up_poz=0.2;
     double gamepadright=0.0;
     double retract_extend=0.0;
 
@@ -114,6 +114,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
 
         control.grabfirst();
 
@@ -167,8 +169,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         if (gamepad1.a && timegrab.seconds() > 0.3)
             if (relicv_grab_poz == 0.2) {
-                relicv_grab_poz = 0.6;
-                relicv_grab.setPosition(0.6);
+                relicv_grab_poz = 0.8;
+                relicv_grab.setPosition(0.8);
                 timegrab.reset();
                 control.sleep(20);
         } else {
@@ -182,15 +184,15 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 
         if (gamepad1.b && timeup.seconds() > 0.3)
-            if (relicv_up_poz == 0.8) {
+            if (relicv_up_poz == 1) {
                 relicv_up_poz = 0;
                 relicv_up.setPosition(0);
                 timeup.reset();
                 SystemClock.sleep(20);
             } else {
-                relicv_up_poz = 0.8;
+                relicv_up_poz =1;
                 timeup.reset();
-                relicv_up.setPosition(0.8);
+                relicv_up.setPosition(1);
                 control.sleep(20);
             }
         
@@ -222,11 +224,19 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(gamepad1.x)
             control.grab();
 
+        if(gamepad2.a){
+            control.goBallArm();
+        }else{
+            if(gamepad2.b){
+                control.stopBallArm();
+            }
+        }
+
         telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
         telemetry.addData("Status", "b = up");
-        telemetry.addData("Status", "y = extend");
+        telemetry.addData("Status", "y  = extend");
         telemetry.addData("Status", "servo left"+control.grab_cube_left.getPosition());
         telemetry.addData("Status", "servo right"+control.grab_cube_right.getPosition());
         telemetry.addData("Status", "servo up"+relicv_up.getPosition());
