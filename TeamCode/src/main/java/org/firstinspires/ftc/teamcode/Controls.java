@@ -31,6 +31,7 @@ public class Controls {
 
 
     //declaring tunning variables
+    static  double CLOSE_ENOUGH_TO_ZERO=3.5;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private int offset=1;
@@ -190,7 +191,7 @@ public class Controls {
         extendDrive.setPower(0);
         timeextend.reset();
         timeextend.startTime();
-
+;
 
     }
 
@@ -201,7 +202,8 @@ public class Controls {
         rightDrive.setPower(power);
         leftDrive.setPower(-power);
         while( degrees > Gyro.getIntegratedZValue()){
-
+            if(degrees-Gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
+                break;
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -214,6 +216,8 @@ public class Controls {
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
         while( -degrees < Gyro.getIntegratedZValue()){
+            if(degrees+Gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
+                break;
 
         }
         leftDrive.setPower(0);
