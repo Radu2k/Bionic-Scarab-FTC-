@@ -28,6 +28,8 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import android.os.SystemClock;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -43,23 +45,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name="a_linear_right", group ="Autonomous")
-public class Autonomous_linear_right_side extends LinearOpMode {
+@Autonomous(name="a_linear_left", group ="Autonomous")
+public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
-    private ColorSensor under_colorSensor;
+    private ColorSensor color_sensor;
     private Controls control = new Controls();
-    private String team_color="blue";
+    private String team_color="red";
 
     VuforiaLocalizer vuforia;
+
 
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double     FORWARD_SPEED = 0.6;
     static final double     TURN_SPEED    = 0.5;
 
-   public void initialise(){
+    public void initialise(){
         telemetry.addData("Status", "Initialized");
-        under_colorSensor = hardwareMap.get(ColorSensor.class, "under_colorsensor");
+        color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -113,12 +116,16 @@ public class Autonomous_linear_right_side extends LinearOpMode {
         }
     }
 
-
-
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
 
         initialise();
 
+        team_color="red";
+
+        control.stopBallArm();
+
+        // vumark configuration
         RelicRecoveryVuMark vuMark = null;
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -128,8 +135,6 @@ public class Autonomous_linear_right_side extends LinearOpMode {
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
-
-
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
@@ -147,31 +152,42 @@ public class Autonomous_linear_right_side extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", under_colorSensor.red()),under_colorSensor.green(),under_colorSensor.blue());
-            if(under_colorSensor.red()>under_colorSensor.blue()) {
+            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
+
+            control.goBallArm();
+            control.sleep(60);
+
+            if(color_sensor.red()>color_sensor.blue()) {
                 telemetry.addData("ball color: ", "red");
                 team_color = "red";
             }
-
-
             else{team_color="blue";
                 telemetry.addData("ball color: ","blue");
             }
 
+            relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+
+                vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            }
 
 
-            /** if((colorSensor.red()>colorSensor.blue()))
-             if(team_color=="red")
-             {
-                 control.gyroDrive(0.3,0.5,0);
-                 control.gyroTurn(0.4,90);
-             }
-             else
-             **/
+             if((color_sensor.red()<color_sensor.blue())) {
+                 autonomousturnright(TURN_SPEED, 0.4);
+                 autonomousturnleft(TURN_SPEED, 0.4);
+             }else
+              {autonomousturnleft(TURN_SPEED,0.4);
+                autonomousturnright(TURN_SPEED,0.4);
+                 }
+            control.stopBallArm();
+            control.goBallArm();
+
+            control.sleep(60);
+
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                telemetry.addData("DETECTED:","r  ight");
+                telemetry.addData("DETECTED:","right");
             }
             if(vuMark==RelicRecoveryVuMark.CENTER){
                 telemetry.addData("DETECTED:","center");
@@ -181,45 +197,70 @@ public class Autonomous_linear_right_side extends LinearOpMode {
             }
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                autonomousmove(FORWARD_SPEED,2);
-                control.turnRightByGyro(TURN_SPEED,90);
-                control.grab();
-                control.turnLeftByGyro(TURN_SPEED,90);
-                autonomousmove(-1,2);
+                autonomousturnright(TURN_SPEED,0.4);
+                autonomousmove(FORWARD_SPEED,0.8);
+                autonomousmove(0,3);
 
+                autonomousturnleft(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
+                control.grab();
+
+                autonomousturnright(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
+                autonomousmove(-1,0.8);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
 
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
-                autonomousmove(FORWARD_SPEED,3);
-                control.turnRightByGyro(TURN_SPEED,90);
+                autonomousturnright(TURN_SPEED,0.4);
+                autonomousmove(FORWARD_SPEED,0.5);
+                autonomousmove(0,3);
+
+                autonomousturnleft(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
                 control.grab();
-                control.turnLeftByGyro(TURN_SPEED,90);
-                autonomousmove(-1,3);
+
+                autonomousturnright(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
+                autonomousmove(-1,0.5);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
             }
+
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(FORWARD_SPEED,4);
-                control.turnRightByGyro(TURN_SPEED,90);
+                autonomousturnright(TURN_SPEED,0.4);
+                autonomousmove(FORWARD_SPEED,0.3);
+                autonomousmove(0,3);
+
+                autonomousturnleft(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
                 control.grab();
-                control.turnLeftByGyro(TURN_SPEED,90);
-                autonomousmove(-1,4);
+
+                autonomousturnright(TURN_SPEED, 0.4);
+                autonomousmove(0,3);
+
+                autonomousmove(-1,0.3);
+                autonomousmove(0,3);
+
+                autonomousmove(FORWARD_SPEED,0.0);
             }
 
 
 
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous_linear.java
-            telemetry.update();
-            for(int i=0;i<4;i++){
-                control.turnRightByGyro(0.7,90);
-                control.moveByTime(0.7,1500);
-            }
-=======
             telemetry.addData("Status", "X" + control.gyro.rawX());
             telemetry.addData("Status", "Y" + control.gyro.rawY());
             telemetry.addData("Status", "Z" + control.gyro.rawZ());
             telemetry.update();
->>>>>>> origin/Radu:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous_linear_right_side.java
 
             break;
         }

@@ -61,14 +61,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime timegrab=new ElapsedTime();
     private ElapsedTime timeup=new ElapsedTime();
 
-    private int retract=1;
     Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.2;
-    double gamepadright=0.0;
-    double retract_extend=0.0;
-
 
     Servo relicv_up;
     Servo relicv_grab;
@@ -76,9 +72,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
-
     @Override
-
     public void init() {
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -120,6 +114,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.grabfirst();
 
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -127,14 +122,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void init_loop() {
 
     }
+
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
         runtime.reset();
-
+        relicv_up.setPosition(180);
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -151,7 +148,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_down)
         {
             control.lifter_stop();
-            //control.sleep(20);
+
         }
 
 
@@ -163,7 +160,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(!gamepad1.dpad_up)
         {
             control.lifter_stop();
-            //control.sleep(10);
         }
 
 
@@ -181,7 +177,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 
             }
-
 
         if (gamepad1.b && timeup.seconds() > 0.3)
             if (relicv_up_poz == 1) {
@@ -226,10 +221,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(gamepad1.x)
             control.grab();
 
-        if(gamepad2.a){
+        if(gamepad1.y){
             control.goBallArm();
         }else{
-            if(gamepad2.b){
+            if(gamepad1.y){
                 control.stopBallArm();
             }
         }
@@ -247,6 +242,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status",String.format("left trig" + ((boolean) gamepad1.left_bumper)));
 
     }
+
     /*
      * Code to run ONCE after the driver hits STOP
      */

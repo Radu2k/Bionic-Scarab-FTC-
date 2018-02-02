@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 //import java.sql.Time;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-
+import static com.sun.tools.doclint.Entity.and;
 
 
 public class Controls {
@@ -35,36 +35,16 @@ public class Controls {
     static  double CLOSE_ENOUGH_TO_ZERO=3.5;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
-    private int offset=2;
-    private double cmPerRotation=13.333333333333333;
-    private double degreesPerRotation=0.3141592653589793;
     private double rightPower;
     private double powerRatio=97.0;//acceleration value the closer to 100 the faster the acceleration
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
-
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
-    private int ZAccumulated;
 
     private boolean grab_cub_check=true;
-    private boolean ball_arm_check=true;
-
-
-
-
-    public ElapsedTime timeextend = new ElapsedTime();
-
+    private boolean ball_check=true;
 
 
     public ElapsedTime timegrab = new ElapsedTime();
@@ -88,20 +68,6 @@ public class Controls {
         upDrive.setPower(-upStep);
     }
 
-    public void forewordWithDistance(double power ,int distance){
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        double steps = distance*cmPerRotation;
-        int step = (int) steps;
-        leftDrive.setTargetPosition(step);
-        rightDrive.setTargetPosition(step);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setPower(power);
-        rightDrive.setPower(power);
-    }
-    
-
     public void grabfirst(){
 
         grab_cube_right.setPosition(0.9);
@@ -120,7 +86,7 @@ public class Controls {
 
             } else {
 
-                grab_cube_right.setPosition( 0.7);
+                grab_cube_right.setPosition(0.8);
                 grab_cube_left.setPosition(0.1);
                 grab_cub_check = true;
                 timegrab.reset();
@@ -134,20 +100,8 @@ public class Controls {
         upDrive.setPower(0.0);
     }
 
-    public void stop_extend_relic(){
-        extendDrive.setPower(0);
-        timeextend.reset();
-        timeextend.startTime();
-;
-
-    }
-
     public final void sleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        SystemClock.sleep(milliseconds);
     }
 
     public void turnLeftByGyro(double power ,double degrees){
@@ -156,8 +110,8 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(power);
         leftDrive.setPower(-power);
-        while( degrees > Gyro.getIntegratedZValue()){
-            if(degrees-Gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
+        while( degrees > gyro.getIntegratedZValue()){
+            if(degrees-gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
                 break;
 
         }
@@ -171,8 +125,8 @@ public class Controls {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setPower(-power);
         leftDrive.setPower(power);
-        while( -degrees < Gyro.getIntegratedZValue()){
-            if(degrees+Gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
+        while( -degrees < gyro.getIntegratedZValue()){
+            if(degrees+gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
                 break;
 
         }
@@ -180,14 +134,12 @@ public class Controls {
         rightDrive.setPower(0);
     }
 
-
     public void stopBallArm(){
         if(timeball.seconds()>0.3) {
             ball_servo.setPosition(0.5);
-            grab_cub_check = false;
+            ball_check = false;
             timeball.reset();
-            timeball.startTime();
-
+            timeball.startTime();}}
 
     public void moveByTime(double power,int time){
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -199,16 +151,25 @@ public class Controls {
         leftDrive.setPower(0);
     }
 
-        }
-    }
-
     public void goBallArm(){
-        if(timeball.seconds()>0.3) {
+        if( ball_check==false) {
             ball_servo.setPosition(0);
-            grab_cub_check = false;
+           SystemClock.sleep((long) 0.3);
+            ball_check = true;
+            ball_servo.setPosition(0.5);
             timeball.reset();
             timeball.startTime();
         }
+        else
+        {ball_servo.setPosition(1);
+            SystemClock.sleep((long) 0.3);
+            ball_check = false;
+            ball_servo.setPosition(0.5);
+            timeball.reset();
+            timeball.startTime();}
+
+
     }
+
 
 }
