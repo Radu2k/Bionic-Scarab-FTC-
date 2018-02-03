@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name="a_linear_left", group ="Autonomous")
+@Autonomous(name="Autonomous_linear_right_side_blue_team", group ="Autonomous")
 public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
     private ColorSensor color_sensor;
@@ -63,6 +63,7 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
     public void initialise(){
         telemetry.addData("Status", "Initialized");
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -200,12 +201,12 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 autonomousmove(FORWARD_SPEED,0.8);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(TURN_SPEED,90);
+                control.turnLeftByGyro(1,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(TURN_SPEED,90);
+                control.turnRightByGyro(1,90);
                 autonomousmove(0,3);
 
                 autonomousmove(-1,0.8);
@@ -219,12 +220,12 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 autonomousmove(FORWARD_SPEED,0.5);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(TURN_SPEED,90);
+                control.turnLeftByGyro(1,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(TURN_SPEED,90);
+                control.turnRightByGyro(1,90);
                 autonomousmove(0,3);
 
                 autonomousmove(-1,0.5);
@@ -238,12 +239,12 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 autonomousmove(FORWARD_SPEED,0.3);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(TURN_SPEED,90);
+                control.turnLeftByGyro(1,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(TURN_SPEED,90);
+                control.turnRightByGyro(1,90);
                 autonomousmove(0,3);
 
                 autonomousmove(-1,0.3);

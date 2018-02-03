@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Autonomous(name="a_linear_right", group ="Autonomous")
+@Autonomous(name="Autonomous_linear_left_side_blue_team", group ="Autonomous")
 public class Autonomous_linear_left_side_blue_team extends LinearOpMode {
 
     private ColorSensor color_sensor;
@@ -59,7 +59,8 @@ public class Autonomous_linear_left_side_blue_team extends LinearOpMode {
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
-        color_sensor = hardwareMap.get(ColorSensor.class, "under_colorsensor");
+        color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name="a_linear_left", group ="Autonomous")
+@Autonomous(name="Autonomous_linear_left_side_red_team", group ="Autonomous")
 public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
     private ColorSensor color_sensor;
@@ -84,6 +84,8 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
+
     }
 
     public void autonomousturnright(double TURN_SPEED,double seconds){
