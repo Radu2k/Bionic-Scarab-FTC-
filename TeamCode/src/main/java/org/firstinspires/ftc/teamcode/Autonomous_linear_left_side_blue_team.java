@@ -168,12 +168,14 @@ public class Autonomous_linear_left_side_blue_team extends LinearOpMode {
             }
 
             if((color_sensor.red()>color_sensor.blue())) {
-                autonomousturnright(TURN_SPEED, 0.4);
-                autonomousturnleft(TURN_SPEED, 0.4);
+                control.turnRightByGyro(TURN_SPEED,90);
+                control.turnLeftByGyro(TURN_SPEED,90);
             }else
-            {autonomousturnleft(TURN_SPEED,0.4);
-                autonomousturnright(TURN_SPEED,0.4);
+            {
+                control.turnLeftByGyro(TURN_SPEED,90);
+                control.turnRightByGyro(TURN_SPEED,90);
             }
+
             control.stopBallArm();
             control.goBallArm();
 

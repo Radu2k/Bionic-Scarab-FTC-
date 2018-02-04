@@ -167,12 +167,14 @@ public class Autonomous_linear_right_side_red_team extends LinearOpMode {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
 
-            if((color_sensor.red()>color_sensor.blue())) {
-                autonomousturnright(TURN_SPEED, 0.4);
-                autonomousturnleft(TURN_SPEED, 0.4);
+            if((color_sensor.red()<color_sensor.blue())) {
+                control.turnRightByGyro(TURN_SPEED,90);
+                control.turnLeftByGyro(TURN_SPEED,90);
             }else
-            {autonomousturnleft(TURN_SPEED,0.4);
-                autonomousturnright(TURN_SPEED,0.4);
+            {
+                control.turnLeftByGyro(TURN_SPEED,90);
+                control.turnRightByGyro(TURN_SPEED,90);
+
             }
             control.stopBallArm();
             control.goBallArm();

@@ -32,7 +32,7 @@ public class Controls {
 
 
     //declaring tunning variables
-    static  double CLOSE_ENOUGH_TO_ZERO=3.5;
+    static  double CLOSE_ENOUGH_TO_ZERO=24;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
@@ -44,7 +44,7 @@ public class Controls {
     // The can/should be tweaked to suite the specific robot drive train.
 
     private boolean grab_cub_check=true;
-    private boolean ball_check=true;
+    public boolean ball_check=true;
 
 
     public ElapsedTime timegrab = new ElapsedTime();
@@ -106,40 +106,34 @@ public class Controls {
 
     public void turnLeftByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(power);
-        leftDrive.setPower(-power);
-        while( degrees > gyro.getIntegratedZValue()){
-            if(degrees-gyro.getIntegratedZValue() <= CLOSE_ENOUGH_TO_ZERO)
-                break;
-
+        while( degrees - gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
+            rightDrive.setPower(power);
+            leftDrive.setPower(-power);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
     }
 
     public void turnRightByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(-power);
-        leftDrive.setPower(power);
-        while( -degrees < gyro.getIntegratedZValue()){
-            if(degrees+gyro.getIntegratedZValue()<=CLOSE_ENOUGH_TO_ZERO)
-                break;
-
+        while( degrees + gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
+            rightDrive.setPower(-power);
+            leftDrive.setPower(power);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
     }
+
 
     public void stopBallArm(){
         if(timeball.seconds()>0.3) {
             ball_servo.setPosition(0.5);
             ball_check = false;
             timeball.reset();
-            timeball.startTime();}}
+            timeball.startTime();}
+    }
 
     public void moveByTime(double power,int time){
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -154,15 +148,13 @@ public class Controls {
     public void goBallArm(){
         if( ball_check==false) {
             ball_servo.setPosition(0);
-           SystemClock.sleep((long) 0.3);
             ball_check = true;
             ball_servo.setPosition(0.5);
             timeball.reset();
             timeball.startTime();
         }
         else
-        {ball_servo.setPosition(1);
-            SystemClock.sleep((long) 0.3);
+        {ball_servo.setPosition(-1);
             ball_check = false;
             ball_servo.setPosition(0.5);
             timeball.reset();

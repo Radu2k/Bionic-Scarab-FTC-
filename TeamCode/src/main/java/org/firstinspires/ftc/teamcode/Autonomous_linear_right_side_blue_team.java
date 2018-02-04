@@ -150,21 +150,17 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
 
 
-
         while (opModeIsActive()) {
 
             telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
+            telemetry.update();
 
             control.goBallArm();
-            control.sleep(60);
 
-            if(color_sensor.red()>color_sensor.blue()) {
-                telemetry.addData("ball color: ", "red");
-                team_color = "red";
-            }
-            else{team_color="blue";
-                telemetry.addData("ball color: ","blue");
-            }
+            control.turnLeftByGyro(TURN_SPEED,90);
+            sleep(180);
+
+            sleep(180);
 
             relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -173,18 +169,36 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
 
+            if(color_sensor.red()>color_sensor.blue()) {
+                telemetry.addData("ball color: ", "red");
+                telemetry.update();
+            }
+            else{
+                telemetry.addData("ball color: ","blue");
+                telemetry.update();
+            }
+
+
 
             if((color_sensor.red()>color_sensor.blue())) {
-                autonomousturnright(TURN_SPEED, 0.4);
-                autonomousturnleft(TURN_SPEED, 0.4);
+                control.turnRightByGyro(TURN_SPEED,45);
+                control.turnLeftByGyro(TURN_SPEED,45);
             }else
-            {autonomousturnleft(TURN_SPEED,0.4);
-                autonomousturnright(TURN_SPEED,0.4);
+            {
+                control.turnLeftByGyro(TURN_SPEED,45);
+                control.turnRightByGyro(TURN_SPEED,45);
+
             }
             control.stopBallArm();
+
+            telemetry.addData("ball boolean",control.ball_check);
+            telemetry.update();
+
             control.goBallArm();
 
-            control.sleep(60);
+            control.sleep(180);
+
+            control.turnLeftByGyro(TURN_SPEED,90);
 
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
@@ -201,15 +215,15 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 autonomousmove(FORWARD_SPEED,0.8);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(1,90);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(1,90);
+                control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
-                autonomousmove(-1,0.8);
+                autonomousmove(-FORWARD_SPEED,0.8);
                 autonomousmove(0,3);
 
                 autonomousmove(FORWARD_SPEED,0.0);
@@ -220,15 +234,15 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
                 autonomousmove(FORWARD_SPEED,0.5);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(1,90);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(1,90);
+                control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
-                autonomousmove(-1,0.5);
+                autonomousmove(-FORWARD_SPEED,0.5);
                 autonomousmove(0,3);
 
                 autonomousmove(FORWARD_SPEED,0.0);
@@ -236,18 +250,18 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(FORWARD_SPEED,0.3);
+                autonomousmove(FORWARD_SPEED,0.4);
                 autonomousmove(0,3);
 
-                control.turnLeftByGyro(1,90);
+                control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
                 control.grab();
 
-                control.turnRightByGyro(1,90);
+                control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
 
-                autonomousmove(-1,0.3);
+                autonomousmove(-FORWARD_SPEED,0.4);
                 autonomousmove(0,3);
 
                 autonomousmove(FORWARD_SPEED,0.0);
