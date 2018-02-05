@@ -153,6 +153,8 @@ public class Autonomous_linear_left_side_blue_team extends LinearOpMode {
 
             control.goBallArm();
             control.sleep(60);
+            control.stopBallArm();
+
 
             if(color_sensor.red()>color_sensor.blue()) {
                 telemetry.addData("ball color: ", "red");

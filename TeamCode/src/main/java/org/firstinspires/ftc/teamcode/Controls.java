@@ -86,8 +86,8 @@ public class Controls {
 
             } else {
 
-                grab_cube_right.setPosition(0.8);
-                grab_cube_left.setPosition(0.1);
+                grab_cube_right.setPosition(0.6);
+                grab_cube_left.setPosition(0.3);
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
@@ -149,16 +149,12 @@ public class Controls {
         if( ball_check==false) {
             ball_servo.setPosition(0);
             ball_check = true;
-            ball_servo.setPosition(0.5);
-            timeball.reset();
-            timeball.startTime();
+
         }
         else
-        {ball_servo.setPosition(-1);
+        {ball_servo.setPosition(1);
             ball_check = false;
-            ball_servo.setPosition(0.5);
-            timeball.reset();
-            timeball.startTime();}
+                     }
 
 
     }
