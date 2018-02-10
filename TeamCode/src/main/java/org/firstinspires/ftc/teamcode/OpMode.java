@@ -231,6 +231,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             control.goBallArm();
             ball_stop=false;
             SystemClock.sleep(1000);
+
             timeball.reset();
             timeball.startTime();
         }else{
@@ -238,6 +239,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 control.goBallArm();
                 ball_stop=true;
                 SystemClock.sleep(1000);
+                control.stopBallArm();
                 timeball.reset();
                 timeball.startTime();
             }

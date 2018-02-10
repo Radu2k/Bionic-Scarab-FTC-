@@ -36,7 +36,7 @@ public class Controls {
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
-    private double powerRatio=97.0;//acceleration value the closer to 100 the faster the acceleration
+    private double powerRatio=75;//acceleration value the closer to 100 the faster the acceleration
 
 
 
@@ -57,28 +57,29 @@ public class Controls {
         rightPower = (powerRatio*Range.clip(drive - turn, -1.0, 1.0)+(100.0-powerRatio)*rightPower)/100.0;
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
-        //hwMap.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
 
-    public void lifter_up(){
+    public void lifter_up() {
+
         upDrive.setPower(upStep);
     }
 
     public void lifter_down(){
+
         upDrive.setPower(-upStep);
     }
 
     public void grabfirst(){
 
-        grab_cube_right.setPosition(0.9);
-        grab_cube_left.setPosition(0.0);
+        grab_cube_right.setPosition(0.6);
+        grab_cube_left.setPosition(0.3);
 
     }
 
     public void grab(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.4);
+                grab_cube_right.setPosition(0.3);
                 grab_cube_left.setPosition(0.5);
                 grab_cub_check = false;
                 timegrab.reset();
@@ -87,7 +88,7 @@ public class Controls {
             } else {
 
                 grab_cube_right.setPosition(0.6);
-                grab_cube_left.setPosition(0.3);
+                grab_cube_left.setPosition(0.2);
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
@@ -95,12 +96,13 @@ public class Controls {
         }
     }
 
-    public void lifter_stop()
-    {
+    public void lifter_stop(){
+
         upDrive.setPower(0.0);
     }
 
     public final void sleep(long milliseconds) {
+
         SystemClock.sleep(milliseconds);
     }
 
@@ -126,7 +128,6 @@ public class Controls {
 
     }
 
-
     public void stopBallArm(){
         if(timeball.seconds()>0.3) {
             ball_servo.setPosition(0.5);
@@ -150,10 +151,13 @@ public class Controls {
             ball_servo.setPosition(0);
             ball_check = true;
 
+
         }
         else
         {ball_servo.setPosition(1);
             ball_check = false;
+            sleep(1000);
+         ball_servo.setPosition(0.5);
                      }
 
 
