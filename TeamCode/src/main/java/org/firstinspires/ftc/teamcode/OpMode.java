@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.internal.ServoRotate;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -60,15 +62,15 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timegrab=new ElapsedTime();
     private ElapsedTime timeup=new ElapsedTime();
+    private ElapsedTime timeball=new ElapsedTime();
 
-    private int retract=1;
+
     Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.2;
-    double gamepadright=0.0;
-    double retract_extend=0.0;
 
+    boolean ball_stop=true;
 
     Servo relicv_up;
     Servo relicv_grab;
@@ -76,9 +78,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
-
     @Override
-
     public void init() {
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -120,6 +120,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.grabfirst();
 
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -127,14 +128,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void init_loop() {
 
     }
+
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
         runtime.reset();
-
+        relicv_up.setPosition(180);
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -145,25 +148,24 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         control.navigate(drive, turn);
 
-        if (gamepad1.dpad_up)
+        if (gamepad1.right_bumper)
             control.lifter_up();
         else
-        if(!gamepad1.dpad_down)
+        if(!gamepad1.left_bumper)
         {
             control.lifter_stop();
-            //control.sleep(20);
+
         }
 
 
 
-        if (gamepad1.dpad_down)
+        if (gamepad1.left_bumper)
             control.lifter_down();
 
         else
-        if(!gamepad1.dpad_up)
+        if(!gamepad1.right_bumper)
         {
             control.lifter_stop();
-            //control.sleep(10);
         }
 
 
@@ -182,7 +184,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
             }
 
-
         if (gamepad1.b && timeup.seconds() > 0.3)
             if (relicv_up_poz == 1) {
                 relicv_up_poz = 0;
@@ -199,7 +200,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             }
         
 
-        if (gamepad1.right_bumper)
+        if (gamepad1.dpad_up)
         {
             control.extendDrive.setPower(1);
 
@@ -207,17 +208,17 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         }
         else
         {
-            if(!gamepad1.left_bumper)
+            if(!gamepad1.dpad_down)
             {
                 control.extendDrive.setPower(0);
 
             }
         }
 
-        if(gamepad1.left_bumper )
+        if(gamepad1.dpad_down )
             control.extendDrive.setPower(-1);
         else
-        if(!gamepad1.right_bumper)
+        if(!gamepad1.dpad_up)
         {
             control.extendDrive.setPower(0);
 
@@ -226,15 +227,24 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(gamepad1.x)
             control.grab();
 
-        if(gamepad2.a){
+        if(gamepad1.y && ball_stop==true && timeball.seconds() > 0.3){
             control.goBallArm();
+            ball_stop=false;
+            SystemClock.sleep(1000);
+
+            timeball.reset();
+            timeball.startTime();
         }else{
-            if(gamepad2.b){
+            if(gamepad1.y && timeball.seconds() > 0.3){
+                control.goBallArm();
+                ball_stop=true;
+                SystemClock.sleep(1000);
                 control.stopBallArm();
+                timeball.reset();
+                timeball.startTime();
             }
         }
 
-        telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
         telemetry.addData("Status", "b = up");
@@ -243,10 +253,12 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "servo right"+control.grab_cube_right.getPosition());
         telemetry.addData("Status", "servo up"+relicv_up.getPosition());
         telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
-        telemetry.addData("Status", String.format("right trig" + ((boolean) gamepad1.right_bumper)));
-        telemetry.addData("Status",String.format("left trig" + ((boolean) gamepad1.left_bumper)));
+        telemetry.addData("Status",String.format("right trig" + ( gamepad1.right_bumper)));
+        telemetry.addData("Status",String.format("left trig" + ( gamepad1.left_bumper)));
+        telemetry.addData("Status",String.format("ball servo"+ ( control.ball_servo.getPosition())));
 
     }
+
     /*
      * Code to run ONCE after the driver hits STOP
      */
