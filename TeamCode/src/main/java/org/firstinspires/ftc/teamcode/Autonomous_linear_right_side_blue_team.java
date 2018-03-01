@@ -87,26 +87,6 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
     }
 
-    public void autonomousturnright(double TURN_SPEED,double seconds){
-        control.leftDrive.setPower(+TURN_SPEED);
-        control.rightDrive.setPower(-TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
-
-    public void autonomousturnleft(double TURN_SPEED,double seconds){
-        control.leftDrive.setPower(-TURN_SPEED);
-        control.rightDrive.setPower(+TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
-
     public void autonomousmove(double TURN_SPEED,double seconds){
         control.leftDrive.setPower(+TURN_SPEED);
         control.rightDrive.setPower(+TURN_SPEED);
@@ -121,8 +101,6 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
     public void runOpMode() {
 
         initialise();
-
-        team_color="red";
 
         control.stopBallArm();
 
@@ -150,15 +128,11 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
 
 
+
         while (opModeIsActive()) {
 
             telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
             telemetry.update();
-
-            control.goBallArm();
-
-            control.turnLeftByGyro(TURN_SPEED,90);
-            sleep(180);
 
             sleep(180);
 
@@ -171,14 +145,16 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
             if(color_sensor.red()>color_sensor.blue()) {
                 telemetry.addData("ball color: ", "red");
-                telemetry.update();
             }
             else{
                 telemetry.addData("ball color: ","blue");
-                telemetry.update();
             }
+            telemetry.update();
 
+            autonomousmove(-FORWARD_SPEED,0.1);
 
+            control.goBallArm();
+            control.stopBallArm();
 
             if((color_sensor.red()>color_sensor.blue())) {
                 control.turnRightByGyro(TURN_SPEED,45);
@@ -190,15 +166,11 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
             }
             control.stopBallArm();
-
-            telemetry.addData("ball boolean",control.ball_check);
-            telemetry.update();
-
             control.goBallArm();
 
-            control.sleep(180);
+            autonomousmove(FORWARD_SPEED,0.1);
 
-            control.turnLeftByGyro(TURN_SPEED,90);
+            sleep(180);
 
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
@@ -210,61 +182,58 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
             if(vuMark==RelicRecoveryVuMark.LEFT){
                 telemetry.addData("DETECTED:","left");
             }
+            telemetry.update();
+
+            control.turnLeftByGyro(TURN_SPEED,90);
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                autonomousmove(FORWARD_SPEED,0.8);
+                autonomousmove(FORWARD_SPEED,0.3);
                 autonomousmove(0,3);
-
                 control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
+                autonomousmove(FORWARD_SPEED,0.2);
 
                 control.grab();
 
+                autonomousmove(-FORWARD_SPEED,0.2);
+                autonomousmove(0,3);
                 control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
-
-                autonomousmove(-FORWARD_SPEED,0.8);
-                autonomousmove(0,3);
-
-                autonomousmove(FORWARD_SPEED,0.0);
+                autonomousmove(-1,0.3);
 
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
-                autonomousmove(FORWARD_SPEED,0.5);
+                autonomousmove(FORWARD_SPEED,0.4);
                 autonomousmove(0,3);
-
                 control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
+                autonomousmove(FORWARD_SPEED,0.2);
 
                 control.grab();
 
+                autonomousmove(-FORWARD_SPEED,0.2);
+                autonomousmove(0,3);
                 control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
-
-                autonomousmove(-FORWARD_SPEED,0.5);
-                autonomousmove(0,3);
-
-                autonomousmove(FORWARD_SPEED,0.0);
+                autonomousmove(-1,0.4);
             }
 
 
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(FORWARD_SPEED,0.4);
+                autonomousmove(FORWARD_SPEED,0.5);
                 autonomousmove(0,3);
-
                 control.turnLeftByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
+                autonomousmove(FORWARD_SPEED,0.2);
 
                 control.grab();
 
+                autonomousmove(-FORWARD_SPEED,0.2);
+                autonomousmove(0,3);
                 control.turnRightByGyro(TURN_SPEED,90);
                 autonomousmove(0,3);
-
-                autonomousmove(-FORWARD_SPEED,0.4);
-                autonomousmove(0,3);
-
-                autonomousmove(FORWARD_SPEED,0.0);
+                autonomousmove(-FORWARD_SPEED,0.5);
             }
 
 

@@ -87,8 +87,8 @@ public class Controls {
 
             } else {
 
-                grab_cube_right.setPosition(0.6);
-                grab_cube_left.setPosition(0.2);
+                grab_cube_right.setPosition(0.5);
+                grab_cube_left.setPosition(0.3);
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
