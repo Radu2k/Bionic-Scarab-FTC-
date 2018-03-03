@@ -20,7 +20,7 @@
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE ODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
@@ -57,8 +57,8 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
+    static final double     FORWARD_SPEED = 0.3;
+    static final double     TURN_SPEED    = 0.3;
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
@@ -134,7 +134,7 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
             telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
             telemetry.update();
 
-            sleep(180);
+
 
             relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -153,7 +153,7 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
             autonomousmove(-FORWARD_SPEED,0.1);
 
-            control.goBallArm();
+            control.BallArm();
             control.stopBallArm();
 
             if((color_sensor.red()>color_sensor.blue())) {
@@ -166,7 +166,7 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
 
             }
             control.stopBallArm();
-            control.goBallArm();
+            control.BallArm();
 
             autonomousmove(FORWARD_SPEED,0.1);
 

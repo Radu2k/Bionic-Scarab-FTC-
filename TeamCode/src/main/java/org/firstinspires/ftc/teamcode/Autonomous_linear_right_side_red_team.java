@@ -54,8 +54,8 @@ public class Autonomous_linear_right_side_red_team extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
+    static final double     FORWARD_SPEED = 0.4;
+    static final double     TURN_SPEED    = 0.4;
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
@@ -151,7 +151,7 @@ public class Autonomous_linear_right_side_red_team extends LinearOpMode {
 
             telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
 
-            control.goBallArm();
+            control.BallArm();
             control.sleep(60);
 
             if(color_sensor.red()>color_sensor.blue()) {
@@ -177,7 +177,7 @@ public class Autonomous_linear_right_side_red_team extends LinearOpMode {
 
             }
             control.stopBallArm();
-            control.goBallArm();
+            control.BallArm();
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
                 telemetry.addData("DETECTED:","r  ight");

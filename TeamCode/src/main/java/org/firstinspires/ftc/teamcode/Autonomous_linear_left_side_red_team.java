@@ -57,8 +57,8 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.4;
-    static final double     TURN_SPEED    = 0.2;
+    static final double     FORWARD_SPEED = 0.5;
+    static final double     TURN_SPEED    = 0.5;
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
@@ -134,7 +134,6 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
             telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
             telemetry.update();
 
-            sleep(180);
 
             relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -142,6 +141,7 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
+
 
             if(color_sensor.red()>color_sensor.blue()) {
                 telemetry.addData("ball color: ", "red");
@@ -153,20 +153,26 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
             autonomousmove(-FORWARD_SPEED,0.1);
 
-            control.goBallArm();
-            control.stopBallArm();
+            autonomousmove(0,5);
 
-             if((color_sensor.red()<color_sensor.blue())) {
-                 control.turnRightByGyro(TURN_SPEED,45);
-                 control.turnLeftByGyro(TURN_SPEED,45);
-             }else
-              {
-                  control.turnLeftByGyro(TURN_SPEED,45);
-                  control.turnRightByGyro(TURN_SPEED,45);
+            control.BallArm();
 
-              }
+
+            boolean ok=true;
+            while(ok==true) {
+                if ((color_sensor.red() < color_sensor.blue())) {
+                    control.turnRightByGyro(TURN_SPEED, 45);
+                    control.turnLeftByGyro(TURN_SPEED, 45);
+                    ok = false;
+                } else {
+                    control.turnLeftByGyro(TURN_SPEED, 45);
+                    control.turnRightByGyro(TURN_SPEED, 45);
+                    ok = false;
+                }
+            }
+
             control.stopBallArm();
-            control.goBallArm();
+            control.BallArm();
 
             autonomousmove(FORWARD_SPEED,0.1);
 

@@ -227,22 +227,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         if(gamepad1.x)
             control.grab();
 
-        if(gamepad1.y && ball_stop==true && timeball.seconds() > 0.3){
-            control.goBallArm();
-            ball_stop=false;
-            SystemClock.sleep(1000);
-
+        if (gamepad1.y && timeball.seconds() > 0.3)
+        {
+            control.BallArm();
             timeball.reset();
-            timeball.startTime();
-        }else{
-            if(gamepad1.y && timeball.seconds() > 0.3){
-                control.goBallArm();
-                ball_stop=true;
-                SystemClock.sleep(1000);
-                control.stopBallArm();
-                timeball.reset();
-                timeball.startTime();
-            }
+            SystemClock.sleep(20);
         }
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());

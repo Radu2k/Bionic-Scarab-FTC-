@@ -146,19 +146,18 @@ public class Controls {
         leftDrive.setPower(0);
     }
 
-    public void goBallArm(){
-        if( ball_check==false) {
-            ball_servo.setPosition(0);
+    public void BallArm(){
+        if( ball_check==false)
+        {
+            ball_servo.setPosition(-0.4);
             ball_check = true;
-
-
         }
         else
-        {ball_servo.setPosition(1);
+        {
+            ball_servo.setPosition(1);
             ball_check = false;
-            sleep(1000);
-         ball_servo.setPosition(0.5);
-                     }
+
+        }
 
 
     }
