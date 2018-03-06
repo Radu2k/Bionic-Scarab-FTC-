@@ -149,23 +149,22 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.navigate(drive, turn);
 
         if (gamepad1.right_bumper)
-            control.lifter_up();
+            control.extendDrive.setPower(1);
         else
         if(!gamepad1.left_bumper)
         {
-            control.lifter_stop();
-
+            control.extendDrive.setPower(0);
         }
 
 
 
         if (gamepad1.left_bumper)
-            control.lifter_down();
+           control.extendDrive.setPower(-1);
 
         else
         if(!gamepad1.right_bumper)
         {
-            control.lifter_stop();
+            control.extendDrive.setPower(0);
         }
 
 
@@ -202,26 +201,26 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         if (gamepad1.dpad_up)
         {
-            control.extendDrive.setPower(1);
-
-
+            control.lifter_up();
         }
         else
         {
             if(!gamepad1.dpad_down)
             {
-                control.extendDrive.setPower(0);
-
+                control.lifter_stop();
             }
         }
 
         if(gamepad1.dpad_down )
-            control.extendDrive.setPower(-1);
-        else
-        if(!gamepad1.dpad_up)
         {
-            control.extendDrive.setPower(0);
-
+            control.lifter_down();
+        }
+        else
+        {
+            if(!gamepad1.dpad_up)
+            {
+                control.lifter_stop();
+            }
         }
 
         if(gamepad1.x)

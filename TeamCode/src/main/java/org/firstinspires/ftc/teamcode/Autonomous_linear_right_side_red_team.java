@@ -54,8 +54,8 @@ public class Autonomous_linear_right_side_red_team extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.4;
-    static final double     TURN_SPEED    = 0.4;
+    static final double     FORWARD_SPEED = 0.5;
+    static final double     TURN_SPEED    = 0.5;
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");

@@ -32,7 +32,7 @@ public class Controls {
 
 
     //declaring tunning variables
-    static  double CLOSE_ENOUGH_TO_ZERO=24;
+    static  double CLOSE_ENOUGH_TO_ZERO=6;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
@@ -71,7 +71,7 @@ public class Controls {
 
     public void grabfirst(){
 
-        grab_cube_right.setPosition(0.6);
+        grab_cube_right.setPosition(-1);
         grab_cube_left.setPosition(0.3);
 
     }
@@ -79,16 +79,16 @@ public class Controls {
     public void grab(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.3);
-                grab_cube_left.setPosition(0.5);
+                grab_cube_right.setPosition(0.4);
+                grab_cube_left.setPosition(0.7);
                 grab_cub_check = false;
                 timegrab.reset();
                 timegrab.startTime();
 
             } else {
 
-                grab_cube_right.setPosition(0.5);
-                grab_cube_left.setPosition(0.3);
+                grab_cube_right.setPosition(0.6);
+                grab_cube_left.setPosition(0.5);
                 grab_cub_check = true;
                 timegrab.reset();
                 timegrab.startTime();
@@ -108,9 +108,12 @@ public class Controls {
 
     public void turnLeftByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
+        double power2 =0.3;
         while( degrees - gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
-            rightDrive.setPower(power);
-            leftDrive.setPower(-power);
+            rightDrive.setPower(power2);
+            leftDrive.setPower(-power2);
+            if(power2+0.1<power)
+                power2+=0.1;
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -119,12 +122,16 @@ public class Controls {
 
     public void turnRightByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
-        while( degrees + gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
-            rightDrive.setPower(-power);
-            leftDrive.setPower(power);
+        double power2 =0.3;
+        while( degrees - gyro.getIntegratedZValue()<CLOSE_ENOUGH_TO_ZERO){
+            rightDrive.setPower(-power2);
+            leftDrive.setPower(power2);
+            if(power2+0.1<power)
+                power2+=0.1;
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+
 
     }
 
@@ -149,7 +156,7 @@ public class Controls {
     public void BallArm(){
         if( ball_check==false)
         {
-            ball_servo.setPosition(-0.4);
+            ball_servo.setPosition(-1);
             ball_check = true;
         }
         else
