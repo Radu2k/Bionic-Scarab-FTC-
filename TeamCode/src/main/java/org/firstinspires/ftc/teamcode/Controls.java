@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static com.sun.tools.doclint.Entity.and;
+import static java.lang.Math.abs;
 
 
 public class Controls {
@@ -32,16 +33,12 @@ public class Controls {
 
 
     //declaring tunning variables
-    static  double CLOSE_ENOUGH_TO_ZERO=6;
+    static  double CLOSE_ENOUGH_TO_ZERO=20;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
     private double powerRatio=75;//acceleration value the closer to 100 the faster the acceleration
 
-
-
-    // These constants define the desired driving/control characteristics
-    // The can/should be tweaked to suite the specific robot drive train.
 
     private boolean grab_cub_check=true;
     public boolean ball_check=true;
@@ -51,6 +48,16 @@ public class Controls {
     public ElapsedTime timeball=new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
+
+    static final double     MIN_VOLTAGE=11;
+    static final double     MAX_VOLTAGE=14;
+    static final double     TEST_VOLTAGE=13;
+    static final double     BATTERY_ADJUST=0.1;
+
+    double  AdjustForBattery(double time,double battery){
+        double adjust_ratio=abs((battery-MIN_VOLTAGE)/(MAX_VOLTAGE-MIN_VOLTAGE));
+        return time+(BATTERY_ADJUST*adjust_ratio);
+    }
 
     public void navigate(double drive,double turn){
         leftPower = (powerRatio*Range.clip(drive + turn, -1.0, 1.0)+(100.0-powerRatio)*leftPower)/100.0 ;
@@ -71,27 +78,27 @@ public class Controls {
 
     public void grabfirst(){
 
-        grab_cube_right.setPosition(-1);
-        grab_cube_left.setPosition(0.3);
+        grab_cube_right.setPosition(1);
+        grab_cube_left.setPosition(0.5);
 
     }
 
     public void grab(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.4);
+                grab_cube_right.setPosition(0.8);
                 grab_cube_left.setPosition(0.7);
                 grab_cub_check = false;
                 timegrab.reset();
-                timegrab.startTime();
+                //timegrab.startTime();
 
             } else {
 
-                grab_cube_right.setPosition(0.6);
-                grab_cube_left.setPosition(0.5);
+                grab_cube_right.setPosition(0.7);
+                grab_cube_left.setPosition(0.6);
                 grab_cub_check = true;
                 timegrab.reset();
-                timegrab.startTime();
+                //timegrab.startTime();
             }
         }
     }
@@ -108,12 +115,10 @@ public class Controls {
 
     public void turnLeftByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
-        double power2 =0.3;
         while( degrees - gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
-            rightDrive.setPower(power2);
-            leftDrive.setPower(-power2);
-            if(power2+0.1<power)
-                power2+=0.1;
+            rightDrive.setPower(power);
+            leftDrive.setPower(-power);
+
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -122,18 +127,37 @@ public class Controls {
 
     public void turnRightByGyro(double power ,double degrees){
         gyro.resetZAxisIntegrator();
-        double power2 =0.3;
-        while( degrees - gyro.getIntegratedZValue()<CLOSE_ENOUGH_TO_ZERO){
-            rightDrive.setPower(-power2);
-            leftDrive.setPower(power2);
-            if(power2+0.1<power)
-                power2+=0.1;
+        while( degrees + gyro.getIntegratedZValue()>CLOSE_ENOUGH_TO_ZERO){
+            rightDrive.setPower(-power);
+            leftDrive.setPower(power);
+
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
 
+    }
 
+    public void turnLeftByGyroOnPlate(double power ,double degrees){
+        gyro.resetZAxisIntegrator();
+        gyro.getHeading();
+        while( degrees - gyro.getIntegratedZValue()>(CLOSE_ENOUGH_TO_ZERO)){
+            rightDrive.setPower(power);
+            leftDrive.setPower(-power);
 
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+
+    public void turnRightByGyroOnPlate(double power ,double degrees){
+        gyro.resetZAxisIntegrator();
+        while( degrees + gyro.getIntegratedZValue()>(CLOSE_ENOUGH_TO_ZERO)){
+            rightDrive.setPower(-power);
+            leftDrive.setPower(power);
+
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
     }
 
     public void stopBallArm(){
@@ -169,6 +193,5 @@ public class Controls {
 
 
     }
-
 
 }

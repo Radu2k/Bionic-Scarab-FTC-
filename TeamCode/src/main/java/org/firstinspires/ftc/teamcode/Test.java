@@ -48,14 +48,11 @@ public class Test extends LinearOpMode {
 
     private ColorSensor color_sensor;
     private Controls control = new Controls();
-    private String team_color = "blue";
+    private double team_color ;
 
     VuforiaLocalizer vuforia;
 
     private ElapsedTime runtime = new ElapsedTime();
-
-    static final double FORWARD_SPEED = 0.3;
-    static final double TURN_SPEED = 0.3;
 
     public void initialise() {
         telemetry.addData("Status", "Initialized");
@@ -81,43 +78,31 @@ public class Test extends LinearOpMode {
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        team_color = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+
+
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
     }
 
-    public void autonomousturnright(double TURN_SPEED, double seconds) {
-        control.leftDrive.setPower(+TURN_SPEED);
-        control.rightDrive.setPower(-TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
-
-    public void autonomousturnleft(double TURN_SPEED, double seconds) {
-        control.leftDrive.setPower(-TURN_SPEED);
-        control.rightDrive.setPower(+TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
-
-    public void autonomousmove(double TURN_SPEED, double seconds) {
+    public void autonomousmove(double TURN_SPEED,double seconds){
         control.leftDrive.setPower(+TURN_SPEED);
         control.rightDrive.setPower(+TURN_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
+            telemetry.addData("voltage",team_color);
             telemetry.update();
         }
+        control.leftDrive.setPower(0);
+        control.rightDrive.setPower(0);
+
     }
+
 
     @Override
     public void runOpMode() {
         initialise();
         waitForStart();
+
 
         control.gyro.calibrate();
         while (control.gyro.isCalibrating())
@@ -125,10 +110,14 @@ public class Test extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //control.turnRightByGyro(0.5, 90);
-            //autonomousmove(0,2);
-            control.turnLeftByGyro(0.5, 90);
-            //autonomousmove(0,2);
+            //autonomousmove(1,0.53);
+            autonomousmove(0,control.AdjustForBattery(1,hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage()));
+            //control.turnLeftByGyro(0.6,90);
+
+            //autonomousmove(1,0.62);
+            //autonomousmove(0,10);
+            //autonomousmove(1,0.78);
+
             break;
 
         }

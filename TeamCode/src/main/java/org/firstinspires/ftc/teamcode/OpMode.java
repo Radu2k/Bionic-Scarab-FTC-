@@ -33,6 +33,7 @@ import android.os.SystemClock;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -58,6 +59,7 @@ import org.firstinspires.ftc.robotcontroller.internal.ServoRotate;
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
+    private boolean grab_cub_check=true;
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timegrab=new ElapsedTime();
@@ -68,7 +70,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
-    double relicv_up_poz=0.2;
+    double relicv_up_poz=0.8;
 
     boolean ball_stop=true;
 
@@ -78,6 +80,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
     @Override
     public void init() {
 
@@ -111,13 +114,13 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("set up relicv servos","");
 
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        control.rightDrive.setDirection(DcMotor.Direction.FORWARD);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
         control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
 
-        control.grabfirst();
+
 
     }
 
@@ -135,7 +138,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
-        relicv_up.setPosition(180);
+
     }
 
     /*
@@ -145,6 +148,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void loop() {
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+
+
 
         control.navigate(drive, turn);
 
@@ -175,8 +180,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
                 timegrab.reset();
                 //control.sleep(20);
         } else {
-                relicv_grab_poz = 0.2;
-                relicv_grab.setPosition(0.2);
+                relicv_grab_poz = 0.4;
+                relicv_grab.setPosition(0.4);
                 //control.sleep(20);
                 timegrab.reset();
 
@@ -224,7 +229,9 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         }
 
         if(gamepad1.x)
+        {  if(timegrab.seconds()>0.3) {
             control.grab();
+        }}
 
         if (gamepad1.y && timeball.seconds() > 0.3)
         {
