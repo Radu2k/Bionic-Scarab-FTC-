@@ -220,7 +220,6 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
                 control.turnRightByGyro(0.5,90);
 
 
-
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
