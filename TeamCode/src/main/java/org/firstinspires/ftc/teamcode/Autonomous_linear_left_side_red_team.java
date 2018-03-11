@@ -239,7 +239,6 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
                 autonomousmove(0.4,0.5);
                 control.turnRightByGyro(0.5,90);
 
-
             }
 
 
