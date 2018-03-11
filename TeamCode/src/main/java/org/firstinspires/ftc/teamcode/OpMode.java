@@ -31,13 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcontroller.internal.ServoRotate;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -55,24 +55,28 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="OpMode", group="Iterative Opmode" )
 
+
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
+    private boolean grab_cub_check=true;
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timegrab=new ElapsedTime();
     private ElapsedTime timeup=new ElapsedTime();
+    private ElapsedTime timeball=new ElapsedTime();
 
-    private int retract=1;
-    controls control = new controls();
+
+    Controls control = new Controls();
 
     double relicv_grab_poz=0.8;
-    double relicv_up_poz=0.0;
-    double gamepadright=0.0;
-    double gamepadleft=0.0;
+    double relicv_up_poz=0.8;
+
+    boolean ball_stop=true;
 
     Servo relicv_up;
     Servo relicv_grab;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -90,12 +94,11 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         // Tell the driver that initialization is complete.
 
+
         telemetry.addData("Status", "Initialized");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        control.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        control.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -111,13 +114,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("set up relicv servos","");
 
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        control.rightDrive.setDirection(DcMotor.Direction.FORWARD);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
         control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        control.grabfirst();
+        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
+
+
 
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -125,6 +131,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void init_loop() {
 
     }
+
     /*
      * Code to run ONCE when the driver hits PLAY
      */
@@ -133,77 +140,120 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         runtime.reset();
 
     }
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
     public void loop() {
         double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
+        double turn = gamepad1.right_stick_x;
 
-        control.navigate(drive,turn);
 
-        if(gamepad1.right_bumper )
-            control.lifter_up();
-        else control.lifter_stop();
 
-        if(gamepad1.left_bumper )
-            control.lifter_down();
-        else control.lifter_stop();
+        control.navigate(drive, turn);
 
-        if(gamepad1.a && timegrab.seconds()>0.3)
-            if(relicv_grab_poz==0.2) {
-                relicv_grab_poz=0.6;
-                relicv_grab.setPosition(0.6);
+        if (gamepad1.right_bumper)
+            control.extendDrive.setPower(1);
+        else
+        if(!gamepad1.left_bumper)
+        {
+            control.extendDrive.setPower(0);
+        }
+
+
+
+        if (gamepad1.left_bumper)
+           control.extendDrive.setPower(-1);
+
+        else
+        if(!gamepad1.right_bumper)
+        {
+            control.extendDrive.setPower(0);
+        }
+
+
+        if (gamepad1.a && timegrab.seconds() > 0.3)
+            if (relicv_grab_poz == 0.2) {
+                relicv_grab_poz = 0.8;
+                relicv_grab.setPosition(0.8);
+                timegrab.reset();
+                //control.sleep(20);
+        } else {
+                relicv_grab_poz = 0.4;
+                relicv_grab.setPosition(0.4);
+                //control.sleep(20);
                 timegrab.reset();
 
-                SystemClock.sleep(20);
-            } else
-              {relicv_grab_poz=0.2;
-               relicv_grab.setPosition(0.2);
-               SystemClock.sleep(20);
-               timegrab.reset();
 
+            }
 
-              }
-
-        if(gamepad1.b&& timeup.seconds()>0.3)
-            if(relicv_up_poz==0.8) {
-                relicv_up_poz=0;
+        if (gamepad1.b && timeup.seconds() > 0.3)
+            if (relicv_up_poz == 1) {
+                relicv_up_poz = 0;
                 relicv_up.setPosition(0);
                 timeup.reset();
                 SystemClock.sleep(20);
-            }
-            else
-            {
-                relicv_up_poz=0.8;
+            } else {
+                relicv_up_poz =1;
                 timeup.reset();
-                relicv_up.setPosition(0.8);
-                SystemClock.sleep(20);
+
+                relicv_up.setPosition(1);
+                control.sleep(20);
+
             }
-        gamepadleft=gamepad1.left_trigger;
-        gamepadright=gamepad1.right_trigger;
-        control.extendDrive.setPower(gamepadright);
-        control.extendDrive.setPower(-gamepadleft);
+        
+
+        if (gamepad1.dpad_up)
+        {
+            control.lifter_up();
+        }
+        else
+        {
+            if(!gamepad1.dpad_down)
+            {
+                control.lifter_stop();
+            }
+        }
+
+        if(gamepad1.dpad_down )
+        {
+            control.lifter_down();
+        }
+        else
+        {
+            if(!gamepad1.dpad_up)
+            {
+                control.lifter_stop();
+            }
+        }
 
         if(gamepad1.x)
-         control.grab();
+        {  if(timegrab.seconds()>0.3) {
+            control.grab();
+        }}
 
+        if (gamepad1.y && timeball.seconds() > 0.3)
+        {
+            control.BallArm();
+            timeball.reset();
+            SystemClock.sleep(20);
+        }
 
-
-        telemetry.addData("Status", "Run TimeHeigh: " + timeheigh);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
         telemetry.addData("Status", "b = up");
-        telemetry.addData("Status", "y = extend");
+        telemetry.addData("Status", "y  = extend");
         telemetry.addData("Status", "servo left"+control.grab_cube_left.getPosition());
         telemetry.addData("Status", "servo right"+control.grab_cube_right.getPosition());
         telemetry.addData("Status", "servo up"+relicv_up.getPosition());
         telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
-        telemetry.addData("Status", String.format("right trig" + gamepad1.right_bumper));
-        telemetry.addData("Status",String.format("left trig" + gamepad1.left_bumper));
+        telemetry.addData("Status",String.format("right trig" + ( gamepad1.right_bumper)));
+        telemetry.addData("Status",String.format("left trig" + ( gamepad1.left_bumper)));
+        telemetry.addData("Status",String.format("ball servo"+ ( control.ball_servo.getPosition())));
 
     }
+
     /*
      * Code to run ONCE after the driver hits STOP
      */
