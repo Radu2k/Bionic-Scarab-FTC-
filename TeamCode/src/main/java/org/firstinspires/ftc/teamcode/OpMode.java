@@ -31,7 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.SystemClock;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -59,7 +61,6 @@ import org.firstinspires.ftc.robotcontroller.internal.ServoRotate;
 public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
-    private boolean grab_cub_check=true;
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timegrab=new ElapsedTime();
@@ -68,11 +69,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
 
     Controls control = new Controls();
+    private ColorSensor color_sensor;
 
     double relicv_grab_poz=0.8;
     double relicv_up_poz=0.8;
-
-    boolean ball_stop=true;
 
     Servo relicv_up;
     Servo relicv_grab;
@@ -94,11 +94,15 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 
         // Tell the driver that initialization is complete.
 
-
         telemetry.addData("Status", "Initialized");
+        color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        control.ball_color = hardwareMap.get(Servo.class,"ball_servo");
+        control.ball_arm = hardwareMap.get(Servo.class,"ball_arm");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        control.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
@@ -109,17 +113,16 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
         telemetry.addData("set up grab servos","");
 
+        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
+        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+
         relicv_up=hardwareMap.get(Servo.class,"relicv_up");
         relicv_grab=hardwareMap.get(Servo.class,"relicv_grab");
         telemetry.addData("set up relicv servos","");
 
-        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        control.ball_servo = hardwareMap.get(Servo.class,"ball_servo");
-
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
 
 
     }
@@ -138,9 +141,9 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
+        control.ball_color.setPosition(1);
 
     }
-
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -148,8 +151,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     public void loop() {
         double drive = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
-
-
 
         control.navigate(drive, turn);
 
@@ -160,7 +161,6 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         {
             control.extendDrive.setPower(0);
         }
-
 
 
         if (gamepad1.left_bumper)
@@ -233,12 +233,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             control.grab();
         }}
 
-        if (gamepad1.y && timeball.seconds() > 0.3)
-        {
-            control.BallArm();
-            timeball.reset();
-            SystemClock.sleep(20);
-        }
+
+
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Status", "a = grab");
@@ -250,7 +246,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
         telemetry.addData("Status",String.format("right trig" + ( gamepad1.right_bumper)));
         telemetry.addData("Status",String.format("left trig" + ( gamepad1.left_bumper)));
-        telemetry.addData("Status",String.format("ball servo"+ ( control.ball_servo.getPosition())));
+
 
     }
 

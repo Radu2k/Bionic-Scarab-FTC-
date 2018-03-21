@@ -29,35 +29,26 @@ public class Controls {
 
     Servo grab_cube_left;
     Servo grab_cube_right;
-    Servo ball_servo;
+    Servo ball_arm;
+    Servo ball_color;
 
 
     //declaring tunning variables
-    static  double CLOSE_ENOUGH_TO_ZERO=20;
+    static  double CLOSE_ENOUGH_TO_ZERO=26;
     private double upStep=0.5;//how fast to lift the cube
     private double leftPower;
     private double rightPower;
     private double powerRatio=75;//acceleration value the closer to 100 the faster the acceleration
 
-
     private boolean grab_cub_check=true;
     public boolean ball_check=true;
-
+    private boolean ball_color_arm_var=true;
 
     public ElapsedTime timegrab = new ElapsedTime();
     public ElapsedTime timeball=new ElapsedTime();
 
     //main navigation function takes in drive as acceleration forward or backward and turn witch Controls steering
 
-    static final double     MIN_VOLTAGE=11;
-    static final double     MAX_VOLTAGE=14;
-    static final double     TEST_VOLTAGE=13;
-    static final double     BATTERY_ADJUST=0.1;
-
-    double  AdjustForBattery(double time,double battery){
-        double adjust_ratio=abs((battery-MIN_VOLTAGE)/(MAX_VOLTAGE-MIN_VOLTAGE));
-        return time+(BATTERY_ADJUST*adjust_ratio);
-    }
 
     public void navigate(double drive,double turn){
         leftPower = (powerRatio*Range.clip(drive + turn, -1.0, 1.0)+(100.0-powerRatio)*leftPower)/100.0 ;
@@ -78,7 +69,7 @@ public class Controls {
 
     public void grabfirst(){
 
-        grab_cube_right.setPosition(1);
+        grab_cube_right.setPosition(0.6);
         grab_cube_left.setPosition(0.5);
 
     }
@@ -86,7 +77,7 @@ public class Controls {
     public void grab(){
         if(timegrab.seconds()>0.3) {
             if (grab_cub_check == true) {
-                grab_cube_right.setPosition(0.8);
+                grab_cube_right.setPosition(0.4);
                 grab_cube_left.setPosition(0.7);
                 grab_cub_check = false;
                 timegrab.reset();
@@ -94,8 +85,8 @@ public class Controls {
 
             } else {
 
-                grab_cube_right.setPosition(0.7);
-                grab_cube_left.setPosition(0.6);
+                grab_cube_right.setPosition(0.6);
+                grab_cube_left.setPosition(0.5);
                 grab_cub_check = true;
                 timegrab.reset();
                 //timegrab.startTime();
@@ -137,61 +128,18 @@ public class Controls {
 
     }
 
-    public void turnLeftByGyroOnPlate(double power ,double degrees){
-        gyro.resetZAxisIntegrator();
-        gyro.getHeading();
-        while( degrees - gyro.getIntegratedZValue()>(CLOSE_ENOUGH_TO_ZERO)){
-            rightDrive.setPower(power);
-            leftDrive.setPower(-power);
+    public void ball_control(char part) {
+        if (part=='l')
+        {ball_color.setPosition(0.7);
+        sleep(500);
+        ball_color.setPosition(0.5);}
 
-        }
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-    }
-
-    public void turnRightByGyroOnPlate(double power ,double degrees){
-        gyro.resetZAxisIntegrator();
-        while( degrees + gyro.getIntegratedZValue()>(CLOSE_ENOUGH_TO_ZERO)){
-            rightDrive.setPower(-power);
-            leftDrive.setPower(power);
-
-        }
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-    }
-
-    public void stopBallArm(){
-        if(timeball.seconds()>0.3) {
-            ball_servo.setPosition(0.5);
-            ball_check = false;
-            timeball.reset();
-            timeball.startTime();}
-    }
-
-    public void moveByTime(double power,int time){
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setPower(power);
-        leftDrive.setPower(power);
-        SystemClock.sleep(time);
-        rightDrive.setPower(0);
-        leftDrive.setPower(0);
-    }
-
-    public void BallArm(){
-        if( ball_check==false)
-        {
-            ball_servo.setPosition(-1);
-            ball_check = true;
-        }
         else
-        {
-            ball_servo.setPosition(1);
-            ball_check = false;
+        {ball_color.setPosition(0.3);
+        sleep(500);
+        ball_color.setPosition(0.5);}
 
-        }
+    }//bile
 
-
-    }
 
 }
