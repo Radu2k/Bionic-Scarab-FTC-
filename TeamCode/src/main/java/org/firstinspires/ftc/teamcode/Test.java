@@ -28,24 +28,15 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import android.os.SystemClock;
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import static java.lang.Math.abs;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 
 @Autonomous(name="test", group ="Autonomous")
@@ -54,20 +45,45 @@ public class Test extends LinearOpMode {
     private ColorSensor color_sensor;
     private Controls control = new Controls();
 
-
-
     VuforiaLocalizer vuforia;
 
 
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime runtime2 = new ElapsedTime();
 
     static final double     FORWARD_SPEED = 0.3;
-    static final double     TURN_SPEED    = 0.3;
+    static  double     TURN_SPEED_1  = 0.2;
 
+
+    public void turnAbsolute(int target) {
+        int zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
+        double turnSpeed = 0.2;
+
+        while (Math.abs(zAccumulated - target) > 2.7 && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
+            if (zAccumulated > target) {  //if gyro is positive, we will turn right
+                control.leftDrive.setPower(turnSpeed);
+                control.rightDrive.setPower(-turnSpeed);
+            }
+
+            if (zAccumulated < target) {  //if gyro is positive, we will turn left
+                control.leftDrive.setPower(-turnSpeed);
+                control.rightDrive.setPower(turnSpeed);
+            }
+
+            zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
+            telemetry.addData("accu", String.format("%03d", zAccumulated));
+            telemetry.update();
+        }
+
+        control.leftDrive.setPower(0);
+        control.rightDrive.setPower(0);
+
+    }
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
         control.ball_color = hardwareMap.get(Servo.class,"ball_servo");
         control.ball_arm = hardwareMap.get(Servo.class,"ball_arm");
@@ -79,7 +95,6 @@ public class Test extends LinearOpMode {
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
         telemetry.addData("set up lifter and extender engines ","");
 
         control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
@@ -89,25 +104,29 @@ public class Test extends LinearOpMode {
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
         control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
-
-        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        sleep(2000);
     }
 
     public void autonomousmove(double TURN_SPEED,double seconds){
-        control.leftDrive.setPower(+TURN_SPEED);
-        control.rightDrive.setPower(+TURN_SPEED);
+        TURN_SPEED_1=0.2;
+        control.leftDrive.setPower(+TURN_SPEED_1);
+        control.rightDrive.setPower(+TURN_SPEED_1);
         runtime.reset();
+        runtime2.reset();
         while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+            if(runtime2.seconds()>=0.1 && TURN_SPEED_1<=TURN_SPEED)
+            {
+                TURN_SPEED_1=TURN_SPEED_1+0.1;
+                control.leftDrive.setPower(+TURN_SPEED_1);
+                control.rightDrive.setPower(+TURN_SPEED_1);
+                runtime2.reset();
+            }
         }
+
         control.leftDrive.setPower(0);
         control.rightDrive.setPower(0);
     }
-
-
 
     public void autonomousup(double upspeed,double seconds){
         control.upDrive.setPower(upspeed);
@@ -123,117 +142,20 @@ public class Test extends LinearOpMode {
     public void runOpMode() {
 
         initialise();
-
-
-
-        /*// vumark configuration
-        RelicRecoveryVuMark vuMark = null;
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "AW9KAvX/////AAAAGSoAGMf4Dkz0hJ7OIMefI9w9qAkRHuDZBtDVnai4mtg/RUSwT94QTlOFFGJoaF55C1C+aponf8pYfTkVDKBGsGosyfQp1JQZvagKfsyLIYgs8pmZ7GYk7zCjZ1AN3mnmg8558Z/G7SwsaEgCJD2TLmsWYxaKe8PmDLPvRB57dJSJ30lhP9mhPoBmJo0futlynTkzNIn18MR0+DnCCbSIY3UPiwePzC3/AOZyEMV2mVfC/poxmEN+r1cbTCQ4fbjG6OgD0yS7yK9U3VhI97jJJ673neGOyBRJNQqvgdVT/SkjjnlCGVyYrk9nDmiqxQQq8Zju4/CkjodjuRnIBxhc2cWfNbVIQLOBl6LlL9c4Rnh9";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
-*/
-        waitForStart();
-
-
-        control.gyro.calibrate();
+/*
+        control.gyro.calibrate(
         while (control.gyro.isCalibrating())
             sleep(5);
         telemetry.addData("Gyro", "Calibrating");
         sleep(10);
-
-
+*/
+        waitForStart();
 
         while (opModeIsActive()) {
 
-            control.ball_color.setPosition(0.7);
-
-            control.ball_color.setPosition(0.0);
-
-
-/*            while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-
-                vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            }
-
-            if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(0.4,0.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.4,1.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.4,1);
-                autonomousmove(0,1);
-                autonomousup(-1,0.5);
-                autonomousmove(0,1);
-                control.grab();
-                control.turnRightByGyro(0.4,40);
-                autonomousmove(0.4,0.5);
-                control.turnLeftByGyro(0.5,90);
-
-
-            }
-
-            if(vuMark==RelicRecoveryVuMark.CENTER){
-                autonomousmove(0.4,0.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.6,1.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.4,1);
-                autonomousmove(0,1);
-                autonomousup(-1,0.5);
-                autonomousmove(0,1);
-
-                control.grab();
-
-                control.turnRightByGyro(0.4,40);
-                autonomousmove(0.4,0.5);
-                control.turnRightByGyro(0.5,90);
-
-            }
-
-
-            if(vuMark==RelicRecoveryVuMark.RIGHT){
-                autonomousmove(0.4,0.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.8,1.5);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.5,90);
-                autonomousmove(0,1);
-                autonomousmove(0.4,1);
-                autonomousmove(0,1);
-                autonomousup(-1,0.5);
-                autonomousmove(0,1);
-
-                control.grab();
-
-                control.turnRightByGyro(0.4,40);
-                autonomousmove(0.4,0.5);
-                control.turnRightByGyro(0.5,90);
-
-            }
-
-*/
-
-            telemetry.addData("Status", "X" + control.gyro.rawX());
-            telemetry.addData("Status", "Y" + control.gyro.rawY());
-            telemetry.addData("Status", "Z" + control.gyro.rawZ());
-            telemetry.update();
+            turnAbsolute(90);
+            sleep(2000);
+            control.turnLeftByGyro(0.3,90);
 
             break;
         }

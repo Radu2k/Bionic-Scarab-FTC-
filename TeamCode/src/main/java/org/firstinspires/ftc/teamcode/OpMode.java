@@ -29,17 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.os.SystemClock;
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.internal.ServoRotate;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -62,13 +57,13 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private ElapsedTime timeheigh = new ElapsedTime();
     private ElapsedTime timegrab=new ElapsedTime();
     private ElapsedTime timeup=new ElapsedTime();
-    private ElapsedTime timeball=new ElapsedTime();
 
+    public DcMotor extendDrive = null;
 
     Controls control = new Controls();
+
     private ColorSensor color_sensor;
 
     double relicv_grab_poz=0.8;
@@ -106,7 +101,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
+        extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
         telemetry.addData("set up lifter and extender engines ","");
 
         control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
@@ -116,7 +111,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
         control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+        extendDrive.setDirection(DcMotor.Direction.FORWARD);
 
         relicv_up=hardwareMap.get(Servo.class,"relicv_up");
         relicv_grab=hardwareMap.get(Servo.class,"relicv_grab");
@@ -141,7 +136,8 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
     @Override
     public void start() {
         runtime.reset();
-        control.ball_color.setPosition(1);
+
+
 
     }
     /*
@@ -155,49 +151,46 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         control.navigate(drive, turn);
 
         if (gamepad1.right_bumper)
-            control.extendDrive.setPower(1);
+            extendDrive.setPower(-1);
         else
         if(!gamepad1.left_bumper)
         {
-            control.extendDrive.setPower(0);
+           extendDrive.setPower(0);
         }
 
 
         if (gamepad1.left_bumper)
-           control.extendDrive.setPower(-1);
-
+           extendDrive.setPower(1);
         else
         if(!gamepad1.right_bumper)
         {
-            control.extendDrive.setPower(0);
+            extendDrive.setPower(0);
         }
 
-
-        if (gamepad1.a && timegrab.seconds() > 0.3)
-            if (relicv_grab_poz == 0.2) {
+        if (gamepad1.b && timegrab.seconds() > 0.3)
+            if (relicv_grab_poz == 0.4) {
                 relicv_grab_poz = 0.8;
                 relicv_grab.setPosition(0.8);
                 timegrab.reset();
-                //control.sleep(20);
+
         } else {
                 relicv_grab_poz = 0.4;
                 relicv_grab.setPosition(0.4);
-                //control.sleep(20);
+
                 timegrab.reset();
 
 
             }
 
-        if (gamepad1.b && timeup.seconds() > 0.3)
+        if (gamepad1.x && timeup.seconds() > 0.3)
             if (relicv_up_poz == 1) {
                 relicv_up_poz = 0;
                 relicv_up.setPosition(0);
                 timeup.reset();
-                SystemClock.sleep(20);
+
             } else {
                 relicv_up_poz =1;
                 timeup.reset();
-
                 relicv_up.setPosition(1);
                 control.sleep(20);
 
@@ -228,12 +221,10 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
             }
         }
 
-        if(gamepad1.x)
-        {  if(timegrab.seconds()>0.3) {
+        if(gamepad1.a)
+         if(timegrab.seconds()>0.3) {
             control.grab();
-        }}
-
-
+        }
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -246,6 +237,7 @@ public class OpMode extends com.qualcomm.robotcore.eventloop.opmode.OpMode
         telemetry.addData("Status", "servo grab"+relicv_grab.getPosition());
         telemetry.addData("Status",String.format("right trig" + ( gamepad1.right_bumper)));
         telemetry.addData("Status",String.format("left trig" + ( gamepad1.left_bumper)));
+        telemetry.addData("Status", "servo y"+control.ball_color.getPosition());
 
 
     }

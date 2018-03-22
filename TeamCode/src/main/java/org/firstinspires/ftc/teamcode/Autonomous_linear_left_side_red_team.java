@@ -28,24 +28,19 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import android.os.SystemClock;
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import static java.lang.Math.abs;
 
 
 @Autonomous(name="Autonomous_linear_left_side_red_team", group ="Autonomous")
@@ -79,7 +74,6 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         telemetry.addData("set up drive engines","");
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-        control.extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
         telemetry.addData("set up lifter and extender engines ","");
 
         control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
@@ -89,7 +83,7 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
         control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-        control.extendDrive.setDirection(DcMotor.Direction.FORWARD);
+
 
 
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
@@ -161,12 +155,12 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
             autonomousmove(0,1);//stai
             autonomousup(0.5,1);//ridica cubu'
 
-
+/*
             control.ball_arm.setPosition(-1);
             sleep(500);
             control.ball_arm.setPosition(0.5);
             sleep(500);
-
+/*
             if(color_sensor.red()>color_sensor.blue()) {
                 telemetry.addData("ball color: ", "red");
             }
@@ -181,11 +175,11 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
             else
                 control.ball_control('r');//right
 
-            control.ball_arm.setPosition(1);
-            sleep(500);
-            control.ball_arm.setPosition(0.5);
-            sleep(500);
-
+          //  control.ball_arm.setPosition(1);
+           // sleep(500);
+           // control.ball_arm.setPosition(0.5);
+          //  sleep(500);
+*/
             while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
