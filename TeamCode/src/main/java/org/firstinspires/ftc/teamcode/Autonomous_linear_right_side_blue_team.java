@@ -49,59 +49,83 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
     private ColorSensor color_sensor;
     private Controls control = new Controls();
 
+    public DcMotor extendDrive = null;
+
     VuforiaLocalizer vuforia;
 
+    static  double     TURN_SPEED_1  = 0.2;
+    int zAccumulated;
 
+    Servo ball_arm;
+    Servo ball_color;
+    Servo relicv_up;
+    Servo relicv_grab;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime runtime2 = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.3;
-    static  double     TURN_SPEED_1  = 0.2;
-    int zAccumulated;
+
 
     public void initialise(){
+        telemetry.addData("Status", "Initialized");
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        ball_color = hardwareMap.get(Servo.class,"ball_servo");
+        ball_arm = hardwareMap.get(Servo.class,"ball_arm");
+        ball_arm.setPosition(1);
+        ball_color.setPosition(0.48);
 
-            control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
-            color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-            control.ball_color = hardwareMap.get(Servo.class, "ball_servo");
-            control.ball_arm = hardwareMap.get(Servo.class, "ball_arm");
+        control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        control.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addData("set up drive engines","");
 
-            control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-            control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            control.leftDrive.getMotorType();
+        control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
+        telemetry.addData("set up lifter and extender engines ","");
+        extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
 
-            control.rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-            control.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            control.rightDrive.getMotorType();
+        control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
+        control.grab_cube_left.setPosition(1);
+        control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
+        telemetry.addData("set up grab servos","");
 
-            control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
-            control.upDrive.getMotorType();
+        control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        control.upDrive.setDirection(DcMotor.Direction.FORWARD);
 
-            control.grab_cube_left = hardwareMap.get(Servo.class, "grab_cube_left");
-            control.grab_cube_right = hardwareMap.get(Servo.class, "grab_cube_right");
+        relicv_up=hardwareMap.get(Servo.class,"relicv_up");
+        relicv_grab=hardwareMap.get(Servo.class,"relicv_grab");
+        relicv_grab.setPosition(0.0);
+        relicv_up.setPosition(0.0);
+    }
 
-
-            control.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-            control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
-            control.upDrive.setDirection(DcMotor.Direction.FORWARD);
-            control.grab();
+    public void autonomousmove(double TURN_SPEED,double seconds){
+        control.leftDrive.setPower(+TURN_SPEED);
+        control.rightDrive.setPower(+TURN_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds)) {
+            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
         }
-
+        control.leftDrive.setPower(0);
+        control.rightDrive.setPower(0);
+    }
 
     public void turnAbsolute(int target,double turnSpeed,int i) {
+        control.gyro.resetZAxisIntegrator();
         zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
-
+        runtime.reset();
 
         while (Math.abs(zAccumulated - target) > i && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
             if (zAccumulated > target) {  //if gyro is positive, we will turn right
                 control.leftDrive.setPower(turnSpeed);
-                control.rightDrive.setPower(-turnSpeed);
+                control.rightDrive.setPower(-(turnSpeed+0.1));
             }
 
             if (zAccumulated < target) {  //if gyro is positive, we will turn left
                 control.leftDrive.setPower(-turnSpeed);
-                control.rightDrive.setPower(turnSpeed);
+                control.rightDrive.setPower(turnSpeed+0.1);
             }
 
             zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
@@ -112,61 +136,34 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
         control.leftDrive.setPower(0);
         control.rightDrive.setPower(0);
 
+
     }
-
-
-    public void autonomousmove(double TURN_SPEED,double seconds){
-        if (TURN_SPEED<0)
-            TURN_SPEED_1=-0.2;
-        else
-            TURN_SPEED_1=0.2;
-
-        control.leftDrive.setPower(+TURN_SPEED_1);
-        control.rightDrive.setPower(+TURN_SPEED_1);
-        runtime.reset();
-        runtime2.reset();
-
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
-
-            if(runtime2.seconds()>=0.1 && TURN_SPEED_1<=TURN_SPEED && TURN_SPEED_1>0)
-            {
-                TURN_SPEED_1=TURN_SPEED_1+0.1;
-                control.leftDrive.setPower(+TURN_SPEED_1);
-                control.rightDrive.setPower(+TURN_SPEED_1);
-                runtime2.reset();
-            }
-            else
-            {if(runtime2.seconds()>=0.1 && TURN_SPEED_1>=TURN_SPEED && TURN_SPEED_1<0)
-                {
-                    TURN_SPEED_1=TURN_SPEED_1-0.1;
-                    control.leftDrive.setPower(+TURN_SPEED_1);
-                    control.rightDrive.setPower(+TURN_SPEED_1);
-                    runtime2.reset();
-                }
-            }
-
-        }
-
-        control.leftDrive.setPower(0);
-        control.rightDrive.setPower(0);
-    }
-
 
     public void autonomousup(double upspeed,double seconds){
         control.upDrive.setPower(upspeed);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < seconds)) {
-
+            sleep(100);
         }
         control.upDrive.setPower(0);
     }
 
+    public void ball_control(char part) {
+        if (part=='l')
+        {ball_color.setPosition(0);
+            sleep(500);
+        }
+
+        else
+        {ball_color.setPosition(1);
+            sleep(500);
+        }
+
+    }//bile
+
     @Override
     public void runOpMode() {
 
-        initialise();
-        control.ball_arm.setPosition(1);
-        control.ball_color.setPosition(0.5);
 
         RelicRecoveryVuMark vuMark = null;
 
@@ -177,132 +174,117 @@ public class Autonomous_linear_right_side_blue_team extends LinearOpMode {
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        telemetry.addData(">", "Press Play to start");
+        telemetry.update();
 
-        relicTrackables.activate();
         waitForStart();
-
-
-        control.gyro.calibrate();
-        while (control.gyro.isCalibrating())
-            sleep(5);
-
-        sleep(10);
 
 
 
         while (opModeIsActive()) {
+            initialise();
 
+            control.gyro.calibrate();
+            while (control.gyro.isCalibrating())
+                sleep(5);
+            telemetry.addData("Gyro", "Calibrating");
+            sleep(10);
+
+            relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
 
             control.grab();
 
-            sleep(1000);//stai
-            autonomousup(0.5,0.5);//ridica cubu'
+            autonomousmove(0,1);//stai
+            autonomousup(0.5,0.7);//ridica cubu'
 
-            control.ball_arm.setPosition(0.5);
-            sleep(1000);
-            control.ball_color.setPosition(1);
-            sleep(1000);
-            control.ball_arm.setPosition(0.15);
-            sleep(1000);
-            control.ball_color.setPosition(0.5);
-            sleep(1000);
-            control.ball_arm.setPosition(0);
-            sleep(1000);
 
-            if((color_sensor.red()<color_sensor.blue()))
-                control.ball_control('l');//left
+            ball_arm.setPosition(0.5);
+            sleep(500);
+            ball_color.setPosition(1);
+            sleep(500);
+            ball_arm.setPosition(0.15);
+            sleep(500);
+            ball_color.setPosition(0.43);
+            sleep(500);
+            ball_arm.setPosition(0.3);
+            sleep(500);
+            ball_arm.setPosition(0);
+            sleep(500);
+
+            while (color_sensor.blue() == color_sensor.red())
+            {       ball_color.setPosition(ball_color.getPosition() - 0.02);
+                sleep(700);}
+
+            if((color_sensor.red()>color_sensor.blue()))
+                ball_control('l');//left
             else
-                control.ball_control('r');//right
+               ball_control('r');//right
 
-            control.ball_arm.setPosition(0.5);
-            sleep(1000);
-            control.ball_color.setPosition(0.5);
-            sleep(1000);
-            control.ball_arm.setPosition(1);
+            ball_arm.setPosition(0.5);
+            sleep(100);
+            ball_color.setPosition(0.48);
+            sleep(100);
+            ball_arm.setPosition(1);
 
-/*
+
             while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
-*/
 
-            //if(vuMark==RelicRecoveryVuMark.LEFT){
-                sleep(1000);
-                turnAbsolute(90,0.3,5);
-                sleep(1000);
-                autonomousmove(0.3,1);
-                sleep(1000);
-                turnAbsolute(90,0.38,4);
-                sleep(1000);
-                autonomousmove(0.3,1);
-                sleep(1000);
+
+            if(vuMark==RelicRecoveryVuMark.LEFT){
+                turnAbsolute(90,0.24,16);
+                sleep(100);
+                autonomousmove(0.3,1.3);
+                sleep(100);
+                turnAbsolute(90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
 
-                sleep(1000);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                sleep(1000);
-                turnAbsolute(-90,0.38,4);
-                sleep(1000);
-                autonomousup(-1,0.3);
+            }
 
-
-
-
-         /* if(vuMark==RelicRecoveryVuMark.CENTER){
-
-                sleep(1000);
-                turnAbsolute(90,0.3,5);
-                sleep(1000);
-                autonomousmove(0.3,1.4);
-                sleep(1000);
-                turnAbsolute(90,0.38,4);
-                sleep(1000);
-                autonomousmove(0.3,1);
-                sleep(1000);
+            if(vuMark==RelicRecoveryVuMark.CENTER){
+                turnAbsolute(90,0.24,13);
+                sleep(100);
+                autonomousmove(0.3,1.6);
+                sleep(100);
+                turnAbsolute(90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
-
-                sleep(1000);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                sleep(1000);
-                turnAbsolute(-90,0.38,4);
-                sleep(1000);
-                autonomousup(-1,0.3);
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
 
 
             }
 
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                sleep(1000);
-                turnAbsolute(90,0.3,5);
-                sleep(1000);
-                autonomousmove(0.3,1.7);
-                sleep(1000);
-                turnAbsolute(90,0.38,4);
-                sleep(1000);
-                autonomousmove(0.3,1);
-                sleep(1000);
+                turnAbsolute(90,0.24,13);
+                sleep(100);
+                autonomousmove(0.3,1.8);
+                sleep(100);
+                turnAbsolute(90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
-
-                sleep(1000);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                sleep(1000);
-                turnAbsolute(-90,0.38,4);
-                sleep(1000);
-                autonomousup(-1,0.3);
-
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
             }
-*/
-            sleep(1000);
+
+            autonomousup(-0.5,0.7);
+            autonomousup(0,0.1);
 
 
             break;

@@ -49,23 +49,31 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
     private ColorSensor color_sensor;
     private Controls control = new Controls();
 
-
+    public DcMotor extendDrive = null;
 
     VuforiaLocalizer vuforia;
 
+    static  double     TURN_SPEED_1  = 0.2;
+    int zAccumulated;
 
+    Servo ball_arm;
+    Servo ball_color;
+    Servo relicv_up;
+    Servo relicv_grab;
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime runtime2 = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.3;
-    static final double     TURN_SPEED    = 0.3;
 
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
+        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-        control.ball_color = hardwareMap.get(Servo.class,"ball_servo");
-        control.ball_arm = hardwareMap.get(Servo.class,"ball_arm");
+        ball_color = hardwareMap.get(Servo.class,"ball_servo");
+        ball_arm = hardwareMap.get(Servo.class,"ball_arm");
+        ball_arm.setPosition(1);
+        ball_color.setPosition(0.48);
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -75,8 +83,10 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
         telemetry.addData("set up lifter and extender engines ","");
+        extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
 
         control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
+        control.grab_cube_left.setPosition(1);
         control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
         telemetry.addData("set up grab servos","");
 
@@ -84,9 +94,10 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         control.rightDrive.setDirection(DcMotor.Direction.REVERSE);
         control.upDrive.setDirection(DcMotor.Direction.FORWARD);
 
-
-
-        control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
+        relicv_up=hardwareMap.get(Servo.class,"relicv_up");
+        relicv_grab=hardwareMap.get(Servo.class,"relicv_grab");
+        relicv_grab.setPosition(0.0);
+        relicv_up.setPosition(0.0);
     }
 
     public void autonomousmove(double TURN_SPEED,double seconds){
@@ -101,26 +112,58 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         control.rightDrive.setPower(0);
     }
 
+    public void turnAbsolute(int target,double turnSpeed,int i) {
+        control.gyro.resetZAxisIntegrator();
+        zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
 
+
+        while (Math.abs(zAccumulated - target) > i && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
+            if (zAccumulated > target) {  //if gyro is positive, we will turn right
+                control.leftDrive.setPower(turnSpeed);
+                control.rightDrive.setPower(-(turnSpeed+0.1));
+            }
+
+            if (zAccumulated < target) {  //if gyro is positive, we will turn left
+                control.leftDrive.setPower(-turnSpeed);
+                control.rightDrive.setPower(turnSpeed+0.1);
+            }
+
+            zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
+            telemetry.addData("accu", String.format("%03d", zAccumulated));
+            telemetry.update();
+        }
+
+        control.leftDrive.setPower(0);
+        control.rightDrive.setPower(0);
+
+
+    }
 
     public void autonomousup(double upspeed,double seconds){
         control.upDrive.setPower(upspeed);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < seconds)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+        sleep(100);
         }
         control.upDrive.setPower(0);
     }
+    public void ball_control(char part) {
+        if (part=='l')
+        {ball_color.setPosition(0);
+            sleep(500);
+        }
+
+        else
+        {ball_color.setPosition(1);
+            sleep(500);
+        }
+
+    }//bile
 
     @Override
     public void runOpMode() {
 
-        initialise();
 
-
-
-        // vumark configuration
         RelicRecoveryVuMark vuMark = null;
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -136,154 +179,115 @@ public class Autonomous_linear_left_side_red_team extends LinearOpMode {
         waitForStart();
 
 
-        control.gyro.calibrate();
-        while (control.gyro.isCalibrating())
-            sleep(5);
-        telemetry.addData("Gyro", "Calibrating");
-        sleep(10);
-
 
 
         while (opModeIsActive()) {
+            initialise();
+
+            control.gyro.calibrate();
+            while (control.gyro.isCalibrating())
+                sleep(5);
+            telemetry.addData("Gyro", "Calibrating");
+            sleep(10);
+
             relicTrackables.activate();
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+            extendDrive.setPower(0);
+
             control.grab();
-            control.grab();
-            telemetry.addData("color values:", String.format("red: {0} green: {1} blue: {2}", color_sensor.red()),color_sensor.green(),color_sensor.blue());
-            telemetry.update();
+            autonomousmove(0, 1);//stai
+            autonomousup(0.5, 0.5);//ridica cubu'
 
-            autonomousmove(0,1);//stai
-            autonomousup(0.5,1);//ridica cubu'
 
-/*
-            control.ball_arm.setPosition(-1);
+            ball_arm.setPosition(0.5);
             sleep(500);
-            control.ball_arm.setPosition(0.5);
+            ball_color.setPosition(1);
             sleep(500);
-/*
-            if(color_sensor.red()>color_sensor.blue()) {
-                telemetry.addData("ball color: ", "red");
-            }
-            else{
-                telemetry.addData("ball color: ","blue");
-            }
-            telemetry.update();
+            ball_arm.setPosition(0.15);
+            sleep(500);
+            ball_color.setPosition(0.43);
+            sleep(500);
+            ball_arm.setPosition(0.3);
+            sleep(500);
+            ball_arm.setPosition(0);
+            sleep(500);
 
+            while (color_sensor.blue() == color_sensor.red())
+            {       ball_color.setPosition(ball_color.getPosition() - 0.02);
+                sleep(700);}
 
-            if((color_sensor.red()>color_sensor.blue()))
-                control.ball_control('l');//left
+            if((color_sensor.red()<color_sensor.blue()))
+                ball_control('l');//left
             else
-                control.ball_control('r');//right
+                ball_control('r');//right
 
-          //  control.ball_arm.setPosition(1);
-           // sleep(500);
-           // control.ball_arm.setPosition(0.5);
-          //  sleep(500);
-*/
+            ball_arm.setPosition(0.5);
+            sleep(100);
+            ball_color.setPosition(0.48);
+            sleep(100);
+            ball_arm.setPosition(1);
+
+
             while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
 
                 vuMark = RelicRecoveryVuMark.from(relicTemplate);
             }
 
 
-            if(vuMark==RelicRecoveryVuMark.RIGHT){
-                telemetry.addData("DETECTED:","right");
-            }
-            if(vuMark==RelicRecoveryVuMark.CENTER){
-                telemetry.addData("DETECTED:","center");
-            }
             if(vuMark==RelicRecoveryVuMark.LEFT){
-                telemetry.addData("DETECTED:","left");
-            }
-            telemetry.update();
-
-
-            if(vuMark==RelicRecoveryVuMark.LEFT){
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.3,90);
-                autonomousmove(0,1);
-                autonomousmove(0.3,1);
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.38,92);
-                autonomousmove(0,1);
-                autonomousmove(0.3,0.5);
-                autonomousmove(0,1);
+                turnAbsolute(-90,0.24,16);
+                sleep(100);
+                autonomousmove(0.3,1.3);
+                sleep(100);
+                turnAbsolute(-90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
-
-                autonomousmove(0,1);
-                autonomousup(1,0.40);
-                control.upDrive.setPower(0);
-                autonomousmove(0,1);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.38,180);
-                autonomousmove(0,1);
-                autonomousup(-1,1);
-
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
 
             }
 
             if(vuMark==RelicRecoveryVuMark.CENTER){
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.3,90);
-                autonomousmove(0,1);
-                autonomousmove(0.3,1.14);
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.38,92);
-                autonomousmove(0,1);
-                autonomousmove(0.3,0.5);
-                autonomousmove(0,1);
+                turnAbsolute(-90,0.24,13);
+                sleep(100);
+                autonomousmove(0.3,1.6);
+                sleep(100);
+                turnAbsolute(-90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
-
-                autonomousmove(0,1);
-                autonomousup(1,0.40);
-                control.upDrive.setPower(0);
-                autonomousmove(0,1);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.38,180);
-                autonomousmove(0,1);
-                autonomousup(-1,1);
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
 
 
             }
 
 
             if(vuMark==RelicRecoveryVuMark.RIGHT){
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.3,90);
-                autonomousmove(0,1);
-                autonomousmove(0.3,1.32);
-                autonomousmove(0,1);
-                control.turnRightByGyro(0.38,92);
-                autonomousmove(0,1);
-                autonomousmove(0.3,0.5);
-                autonomousmove(0,1);
+                turnAbsolute(-90,0.24,13);
+                sleep(100);
+                autonomousmove(0.3,1.8);
+                sleep(100);
+                turnAbsolute(-90,0.4,9);
+                sleep(100);
+                autonomousmove(0.24,0.5);
+                sleep(100);
                 control.grab();
+                autonomousmove(-0.24,0.5);
+                autonomousmove(0.25,0.5);
+                autonomousmove(-0.25,0.3);
 
-                autonomousmove(0,1);
-                autonomousup(1,0.40);
-                control.upDrive.setPower(0);
-                autonomousmove(0,1);
-                autonomousmove(-0.3,0.8);
-                autonomousmove(+0.3,0.9);
-                autonomousmove(-0.3,0.9);
-                autonomousmove(0,1);
-                control.turnLeftByGyro(0.38,180);
-                autonomousmove(0,1);
-                autonomousup(-1,1);
-                sleep(50000);
             }
 
+            autonomousup(-0.5,0.7);
+            autonomousup(0,0.1);
 
-            telemetry.addData("Status", "X" + control.gyro.rawX());
-            telemetry.addData("Status", "Y" + control.gyro.rawY());
-            telemetry.addData("Status", "Z" + control.gyro.rawZ());
-            telemetry.update();
 
             break;
         }

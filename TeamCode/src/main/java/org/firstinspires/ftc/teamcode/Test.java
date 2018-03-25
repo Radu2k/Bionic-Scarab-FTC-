@@ -45,30 +45,31 @@ public class Test extends LinearOpMode {
     private ColorSensor color_sensor;
     private Controls control = new Controls();
 
+    public DcMotor extendDrive = null;
+
     VuforiaLocalizer vuforia;
 
-
+    static  double     TURN_SPEED_1  = 0.2;
+    int zAccumulated;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime runtime2 = new ElapsedTime();
 
-    static final double     FORWARD_SPEED = 0.3;
-    static  double     TURN_SPEED_1  = 0.2;
+
+    public void turnAbsolute(int target,double turnSpeed,int i) {
+        control.gyro.resetZAxisIntegrator();
+        zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
 
 
-    public void turnAbsolute(int target) {
-        int zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
-        double turnSpeed = 0.2;
-
-        while (Math.abs(zAccumulated - target) > 2.7 && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
+        while (Math.abs(zAccumulated - target) > i && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
             if (zAccumulated > target) {  //if gyro is positive, we will turn right
                 control.leftDrive.setPower(turnSpeed);
-                control.rightDrive.setPower(-turnSpeed);
+                control.rightDrive.setPower(-(turnSpeed+0.1));
             }
 
             if (zAccumulated < target) {  //if gyro is positive, we will turn left
                 control.leftDrive.setPower(-turnSpeed);
-                control.rightDrive.setPower(turnSpeed);
+                control.rightDrive.setPower(turnSpeed+0.1);
             }
 
             zAccumulated = control.gyro.getIntegratedZValue();  //Set variables to gyro readings
@@ -79,14 +80,13 @@ public class Test extends LinearOpMode {
         control.leftDrive.setPower(0);
         control.rightDrive.setPower(0);
 
+
     }
 
     public void initialise(){
         telemetry.addData("Status", "Initialized");
         control.gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-        control.ball_color = hardwareMap.get(Servo.class,"ball_servo");
-        control.ball_arm = hardwareMap.get(Servo.class,"ball_arm");
 
         control.leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         control.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -96,6 +96,7 @@ public class Test extends LinearOpMode {
 
         control.upDrive = hardwareMap.get(DcMotor.class, "up_drive");
         telemetry.addData("set up lifter and extender engines ","");
+        extendDrive= hardwareMap.get(DcMotor.class, "extend_drive");
 
         control.grab_cube_left=hardwareMap.get(Servo.class,"grab_cube_left");
         control.grab_cube_right=hardwareMap.get(Servo.class,"grab_cube_right");
@@ -142,20 +143,28 @@ public class Test extends LinearOpMode {
     public void runOpMode() {
 
         initialise();
-/*
-        control.gyro.calibrate(
+        extendDrive.setPower(0);
+        control.gyro.calibrate();
         while (control.gyro.isCalibrating())
             sleep(5);
         telemetry.addData("Gyro", "Calibrating");
         sleep(10);
-*/
+
         waitForStart();
 
         while (opModeIsActive()) {
-
-            turnAbsolute(90);
-            sleep(2000);
-            control.turnLeftByGyro(0.3,90);
+            extendDrive.setPower(0);
+            turnAbsolute(90,0.24,13);
+            sleep(1000);
+            autonomousmove(0.3,1);
+            sleep(1000);
+            turnAbsolute(-90,0.4,10);
+            sleep(1000);
+            autonomousmove(0.3,0.5);
+            sleep(1000);
+            turnAbsolute(90,0.4,9);
+            sleep(1000);
+            autonomousmove(0.24,0.4);
 
             break;
         }
